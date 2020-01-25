@@ -1,0 +1,8 @@
+{
+    "errors": {
+        "401-000": "invalid access token",
+        "401-001": "invalid userId",
+        "401-002": "failed to parse user",
+        "500-000": "internal error"        
+    }
+}

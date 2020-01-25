@@ -1,28 +1,23 @@
 package middleware
 
 import (
-	"encoding/json"
-	"errors"
+	"fmt"
 	"net/http"
-	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/ilovelili/dongfeng/util"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	jose "gopkg.in/square/go-jose.v2"
 )
-
 
 // Authenticator auth0 authenticator
 type Authenticator struct {
-	client *AuthingClient
+	client *authingClient
 }
 
 // NewAuthenticator authenticator constructor
-func NewAuthenticator() *Authenticator {		
+func NewAuthenticator() *Authenticator {
 	return &Authenticator{
-		client: NewAuthingClient(),
+		client: newAuthingClient(),
 	}
 }
 
@@ -38,22 +33,31 @@ func (a *Authenticator) Middleware() echo.MiddlewareFunc {
 
 // Skipper auth skipper
 func (a *Authenticator) Skipper(c echo.Context) bool {
-	return c.Path() == "/healthz"
+	return c.Path() == "/healthz" || c.Path() == "/*"
 }
 
 // TokenValidator jwt token validator
-func (a *Authenticator) TokenValidator(idtoken string, c echo.Context) (bool, error) {
-	status, err := a.client.verifyLogin(idtoken)
-	if !status || err != nil {
-		return false, util.ResponseError(c, http.StatusUnauthorized, "401-100", "unauthorized", err)
-	}
-	
-	userinfo, err := a.client.parseUserInfo(pid)
+func (a *Authenticator) TokenValidator(accessToken string, c echo.Context) (bool, error) {
+	userID, err := a.client.parseAccessToken(accessToken)
 	if err != nil {
 		return false, util.ResponseError(c, http.StatusUnauthorized, "401-100", "unauthorized", err)
 	}
-	
 
-	c.Set(util.ContextUser, claims)
+	userinfo, err := a.client.parseUserInfo(userID)
+	if err != nil {
+		return false, util.ResponseError(c, http.StatusUnauthorized, "401-101", "unauthorized", err)
+	}
+
+	// user name can't be empty
+	if userinfo.Name == "" {
+		return false, util.ResponseError(c, http.StatusUnauthorized, "401-102", "failed to parse user", err)
+	}
+
+	// add a email if email empty
+	if userinfo.Email == "" {
+		userinfo.Email = fmt.Sprintf("%s@dfyey.top", userID)
+	}
+
+	c.Set("userinfo", userinfo)
 	return true, nil
 }

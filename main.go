@@ -85,7 +85,7 @@ func (a *App) initServer() {
 func (a *App) initRouter() {
 	s := a.Server
 	s.Static("/", "")
-	s.GET("/healthz", handler.Healthcheck)	
+	s.GET("/healthz", handler.Healthcheck)
 }
 
 func main() {

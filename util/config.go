@@ -12,8 +12,8 @@ import (
 var once sync.Once
 var instance *Config
 
-// GetConfig get config defined in config.json
-func GetConfig() *Config {
+// LoadConfig load config defined in config.json
+func LoadConfig() *Config {
 	once.Do(func() {
 		env := os.Getenv("DF_ENVIROMENT")
 		if env == "" {

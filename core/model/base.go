@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 // BaseModel base model with ID as default pk and timestamps
 type BaseModel struct {
 	ID        uint       `gorm:"primary_key" json:"id"`
