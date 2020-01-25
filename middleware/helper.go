@@ -78,8 +78,8 @@ func (c *authingClient) parseAccessToken(accessToken string) (userID string, err
 }
 
 // parseUserInfo parse user info based on user id
-func (c *authingClient) parseUserInfo(userID string) (*model.User, error) {
-	user := new(model.User)
+func (c *authingClient) parseUserInfo(userID string) (model.User, error) {
+	user := model.User{}
 	p := authing.UserQueryParameter{
 		ID:               graphql.String(userID),
 		RegisterInClient: graphql.String(c.clientID),
