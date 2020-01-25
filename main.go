@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ilovelili/dongfeng/handler"
 	mw "github.com/ilovelili/dongfeng/middleware"
 	"github.com/ilovelili/dongfeng/util"
 	"github.com/ilovelili/logger"
@@ -32,16 +31,11 @@ type App struct {
 func Bootstrap(host string) {
 	app := new(App)
 
-	app.initConfig()
 	app.initServer()
 	app.initRouter()
 
 	logger.Type("application").WithFields(logger.Fields{"host": host}).Infoln("starts dongfeng server")
 	app.Server.Logger.Fatal(app.Server.Start(host))
-}
-
-func (a *App) initConfig() {
-	a.Config = util.LoadConfig()
 }
 
 func (a *App) initServer() {
@@ -79,14 +73,6 @@ func (a *App) initServer() {
 	auth := mw.NewAuthenticator()
 	e.Use(auth.Middleware())
 	a.Server = e
-}
-
-// initRouter init router
-func (a *App) initRouter() {
-	s := a.Server
-	s.Static("/", "")
-	s.GET("/healthz", handler.Healthcheck)
-	s.GET("/login", handler.Login)
 }
 
 func main() {

@@ -5,17 +5,16 @@ import (
 )
 
 // User user repository
-type User struct {
-}
+type User struct{}
 
 // NewUserRepository new user repository
 func NewUserRepository() *User {
+	db().AutoMigrate(&model.User{})
 	return new(User)
 }
 
 // Save save user
 func (r *User) Save(user *model.User) error {
-	db().AutoMigrate(&model.User{})
 	return db().Save(user).Error
 }
 

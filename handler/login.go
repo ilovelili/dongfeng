@@ -9,13 +9,10 @@ import (
 	"github.com/labstack/echo"
 )
 
-var (
-	userRepo = repository.NewUserRepository()
-)
-
 // Login POST /login
 func Login(c echo.Context) error {
 	userInfo, _ := c.Get("userInfo").(model.User)
+	userRepo := repository.NewUserRepository()
 	_, err := userRepo.FindByEmail(userInfo.Email)
 	if err != nil {
 		if err = userRepo.Save(&userInfo); err != nil {
