@@ -3,13 +3,22 @@
         "400-100": "failed to parse multipart form",
         "400-101": "unsupported mimetype",
         "400-102": "failed to bind user",
+        "400-103": "failed to bind notifications",
+        "400-104": "failed to parse classes",
+        "400-105": "failed to bind pupils",
         "401-000": "invalid access token",
         "401-001": "invalid userId",
         "401-002": "failed to parse user",
         "500-000": "internal error",
         "500-100": "failed to save user",
         "500-101": "failed to get notifications",
-        "500-102": "failed to upload avatar",
-        "500-103": "no user"
+        "500-102": "failed to save notifications",
+        "500-103": "failed to upload avatar",
+        "500-104": "no user",
+        "500-105": "failed to get classes",
+        "500-106": "failed to save classes",
+        "500-107": "failed to get pupils",
+        "500-108": "failed to save pupils",
+        "500-109": "failed to get user"
     }
 }

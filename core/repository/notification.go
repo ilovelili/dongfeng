@@ -11,9 +11,32 @@ func NewNotificationRepository() *Notification {
 	return new(Notification)
 }
 
-// Save save Notification
-func (r *Notification) Save(Notification *model.Notification) error {
-	return db().Save(Notification).Error
+// Save save notification
+func (r *Notification) Save(notification *model.Notification) error {
+	return db().Save(notification).Error
+}
+
+// SaveAll save all notifications
+func (r *Notification) SaveAll(notifications []*model.Notification) error {
+	tx := db().Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	for _, notification := range notifications {
+		if err := tx.Save(notification).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit().Error
 }
 
 // FindByEmail find by email

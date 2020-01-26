@@ -1,0 +1,47 @@
+package handler
+
+import (
+	"net/http"
+
+	"github.com/gocarina/gocsv"
+	"github.com/ilovelili/dongfeng/core/model"
+	"github.com/ilovelili/dongfeng/util"
+	"github.com/labstack/echo"
+)
+
+// GetClasses GET /classes
+func GetClasses(c echo.Context) error {
+	year := c.Param("year")
+	classes, err := classRepo.FindAll(year)
+	if err != nil {
+		return util.ResponseError(c, http.StatusInternalServerError, "500-105", "failed to get classes", err)
+	}
+
+	return c.JSON(http.StatusOK, classes)
+}
+
+// UpdateClasses POST /classes
+func UpdateClasses(c echo.Context) error {
+	userInfo, _ := c.Get("userInfo").(model.User)
+	file, _, err := c.Request().FormFile("file")
+	if err != nil {
+		return util.ResponseError(c, http.StatusBadRequest, "400-104", "failed to parse classes", err)
+	}
+	defer file.Close()
+
+	classes := []*model.Class{}
+	if err := gocsv.Unmarshal(file, &classes); err != nil {
+		return util.ResponseError(c, http.StatusBadRequest, "400-104", "failed to parse classes", err)
+	}
+
+	for _, class := range classes {
+		class.CreatedBy = userInfo.Email
+	}
+
+	if err := classRepo.DeleteInsert(classes); err != nil {
+		return util.ResponseError(c, http.StatusInternalServerError, "500-106", "failed to save classes", err)
+	}
+
+	notify(model.ClassListUpdated(userInfo.Email))
+	return c.NoContent(http.StatusOK)
+}

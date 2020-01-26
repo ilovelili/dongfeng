@@ -6,6 +6,7 @@ require (
 	github.com/Authing/authing-go-sdk v0.0.0-20190727023052-765f7b3c79c3
 	github.com/emicklei/go-restful v2.11.1+incompatible
 	github.com/go-resty/resty/v2 v2.1.0
+	github.com/gocarina/gocsv v0.0.0-20190802110148-150c53a64ab6
 	github.com/ilovelili/aliyun-client v0.0.0-20190605074008-4fbaa377d984
 	github.com/ilovelili/digitalkaleido v0.0.3
 	github.com/ilovelili/dongfeng-core v0.0.0-20200122070314-4063bef6d0d9

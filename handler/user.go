@@ -8,13 +8,13 @@ import (
 
 	"github.com/ilovelili/aliyun-client/oss"
 	"github.com/ilovelili/dongfeng/core/model"
-	"github.com/ilovelili/dongfeng/core/repository"
 	"github.com/ilovelili/dongfeng/util"
 	"github.com/labstack/echo"
 )
 
 // UploadAvatar POST /user/upload
 func UploadAvatar(c echo.Context) error {
+	userInfo, _ := c.Get("userInfo").(model.User)
 	aliyunsvc := oss.NewService(config.OSS.APIKey, config.OSS.APISecret)
 	aliyunsvc.SetEndPoint(config.OSS.Endpoint)
 	aliyunsvc.SetBucket(config.OSS.BucketName)
@@ -41,6 +41,7 @@ func UploadAvatar(c echo.Context) error {
 		if err != nil {
 			return err
 		}
+		defer os.Remove(file.Filename)
 		defer dst.Close()
 
 		io.Copy(dst, src)
@@ -52,26 +53,27 @@ func UploadAvatar(c echo.Context) error {
 
 		resp := aliyunsvc.Upload(opts)
 		if resp.Error != nil {
-			return util.ResponseError(c, http.StatusInternalServerError, "500-102", "failed to upload avatar", err)
+			return util.ResponseError(c, http.StatusInternalServerError, "500-103", "failed to upload avatar", err)
 		}
 
 		locations = append(locations, resp.Location)
 	}
 
+	notify(model.ProfileUpdated(userInfo.Email))
 	return c.JSON(http.StatusOK, locations)
 }
 
 // UpdateUser POST /user/update
 func UpdateUser(c echo.Context) error {
+	userInfo, _ := c.Get("userInfo").(model.User)
 	user := new(model.User)
 	if err := c.Bind(user); err != nil {
 		return util.ResponseError(c, http.StatusBadRequest, "400-102", "failed to bind user", err)
 	}
 
-	userRepo := repository.NewUserRepository()
 	existingUser, err := userRepo.FindByEmail(user.Email)
 	if err != nil {
-		return util.ResponseError(c, http.StatusInternalServerError, "500-103", "no user", err)
+		return util.ResponseError(c, http.StatusInternalServerError, "500-104", "no user", err)
 	}
 
 	user.ID = existingUser.ID
@@ -90,6 +92,7 @@ func UpdateUser(c echo.Context) error {
 		return util.ResponseError(c, http.StatusInternalServerError, "500-100", "failed to save user", err)
 	}
 
+	notify(model.ProfileUpdated(userInfo.Email))
 	return c.NoContent(http.StatusOK)
 }
 
