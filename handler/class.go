@@ -11,8 +11,8 @@ import (
 
 // GetClasses GET /classes
 func GetClasses(c echo.Context) error {
-	year := c.Param("year")
-	classes, err := classRepo.FindAll(year)
+	year := c.QueryParam("year")
+	classes, err := classRepo.Find(year)
 	if err != nil {
 		return util.ResponseError(c, http.StatusInternalServerError, "500-105", "failed to get classes", err)
 	}

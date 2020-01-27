@@ -7,15 +7,25 @@ type Pupil struct{}
 
 // NewPupilRepository new pupil repository
 func NewPupilRepository() *Pupil {
-	db().AutoMigrate(&model.Pupil{})
+	db().AutoMigrate(&model.Pupil{}, &model.Class{})
 	return new(Pupil)
 }
 
-// FindAll find all pupiles
-func (r *Pupil) FindAll() ([]*model.Pupil, error) {
-	pupiles := []*model.Pupil{}
-	err := db().Preload("Class").Find(&pupiles).Error
-	return pupiles, err
+// Find find pupils
+func (r *Pupil) Find(class, year string) ([]*model.Pupil, error) {
+	pupils := []*model.Pupil{}
+
+	query := db().Joins("JOIN classes ON classes.id = pupils.class_id")
+	if class != "" && year != "" {
+		query = query.Where("classes.year = ? AND classes.name = ?", year, class)
+	} else if class == "" && year != "" {
+		query = query.Where("classes.year = ?", year)
+	} else if class != "" && year == "" {
+		query = query.Where("classes.name = ?", class)
+	}
+
+	err := query.Preload("Class").Find(&pupils).Error
+	return pupils, err
 }
 
 // DeleteInsert delete and insert pupils
@@ -51,6 +61,8 @@ func (r *Pupil) DeleteInsert(pupils []*model.Pupil) error {
 	}
 
 	for _, pupil := range pupils {
+		// set ID to 0 to insert instead of update
+		pupil.ID = 0
 		if err := tx.Save(pupil).Error; err != nil {
 			tx.Rollback()
 			return err

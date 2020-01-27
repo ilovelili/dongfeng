@@ -24,6 +24,6 @@ func (r *Notification) SetRead(notificationIDs []int) error {
 // FindByEmail find by email
 func (r *Notification) FindByEmail(email string) ([]*model.Notification, error) {
 	notifications := []*model.Notification{}
-	err := db().Where("user = ?", email).Find(&notifications).Error
+	err := db().Where("user = ? AND `read` = 0", email).Find(&notifications).Error
 	return notifications, err
 }

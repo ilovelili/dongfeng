@@ -11,8 +11,8 @@ func NewClassRepository() *Class {
 	return new(Class)
 }
 
-// FindAll find all classes
-func (r *Class) FindAll(year string) ([]*model.Class, error) {
+// Find find classes
+func (r *Class) Find(year string) ([]*model.Class, error) {
 	classes := []*model.Class{}
 	query := db()
 	if year != "" {
@@ -56,6 +56,8 @@ func (r *Class) DeleteInsert(classes []*model.Class) error {
 	}
 
 	for _, class := range classes {
+		// set ID to 0 to insert instead of update
+		class.ID = 0
 		if err := tx.Save(class).Error; err != nil {
 			tx.Rollback()
 			return err
