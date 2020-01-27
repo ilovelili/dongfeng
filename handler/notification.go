@@ -19,14 +19,17 @@ func GetNotifications(c echo.Context) error {
 	return c.JSON(http.StatusOK, notifications)
 }
 
-// SaveNotifications POST /notifications
-func SaveNotifications(c echo.Context) error {
-	notifications := []*model.Notification{}
-	if err := c.Bind(notifications); err != nil {
+// SetNotificationsRead POST /notifications
+func SetNotificationsRead(c echo.Context) error {
+	type setReadReq struct {
+		IDs []int `json:"ids"`
+	}
+	req := new(setReadReq)
+	if err := c.Bind(req); err != nil {
 		return util.ResponseError(c, http.StatusBadRequest, "400-103", "failed to bind notifications", err)
 	}
 
-	if err := notificationRepo.SaveAll(notifications); err != nil {
+	if err := notificationRepo.SetRead(req.IDs); err != nil {
 		return util.ResponseError(c, http.StatusInternalServerError, "500-102", "failed to save notifications", err)
 	}
 

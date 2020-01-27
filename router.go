@@ -9,12 +9,11 @@ func (a *App) initRouter() {
 	s.GET("/healthz", handler.Healthcheck)
 	s.GET("/login", handler.Login)
 	s.GET("/notifications", handler.GetNotifications)
-	s.POST("/notifications", handler.SaveNotifications)
+	s.POST("/notifications", handler.SetNotificationsRead)
 	s.POST("/user/upload", handler.UploadAvatar)
 	s.POST("/user/update", handler.UpdateUser)
 	s.GET("/classes", handler.GetClasses)
 	s.POST("/classes", handler.UpdateClasses)
 	s.GET("/pupils", handler.GetPupils)
-	s.POST("/pupil", handler.UpdatePupil)
 	s.POST("/pupils", handler.UpdatePupils)
 }

@@ -16,27 +16,9 @@ func (r *Notification) Save(notification *model.Notification) error {
 	return db().Save(notification).Error
 }
 
-// SaveAll save all notifications
-func (r *Notification) SaveAll(notifications []*model.Notification) error {
-	tx := db().Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		}
-	}()
-
-	if err := tx.Error; err != nil {
-		return err
-	}
-
-	for _, notification := range notifications {
-		if err := tx.Save(notification).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-	}
-
-	return tx.Commit().Error
+// SetRead set notification read
+func (r *Notification) SetRead(notificationIDs []int) error {
+	return db().Model(&model.Notification{}).Where("id IN (?)", notificationIDs).Update("read", true).Error
 }
 
 // FindByEmail find by email

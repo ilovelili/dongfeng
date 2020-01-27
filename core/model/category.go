@@ -1,17 +1,19 @@
 package model
 
 // CategoryEnum category enum
-type CategoryEnum uint
+type CategoryEnum string
 
 const (
+	// CategoryReserved reserved
+	CategoryReserved CategoryEnum = ""
 	// CategoryGrowthProfile growth profile
-	CategoryGrowthProfile CategoryEnum = 1
+	CategoryGrowthProfile CategoryEnum = "成长档案"
 	// CategoryPhysique physique
-	CategoryPhysique CategoryEnum = 2
+	CategoryPhysique CategoryEnum = "体格信息"
 	// CategoryNutrition nutrition
-	CategoryNutrition CategoryEnum = 3
+	CategoryNutrition CategoryEnum = "营养膳食"
 	// CategoryAttendance attendance
-	CategoryAttendance CategoryEnum = 4
+	CategoryAttendance CategoryEnum = "出勤信息"
 	// CategoryAgentSmith agent smith
-	CategoryAgentSmith CategoryEnum = 5
+	CategoryAgentSmith CategoryEnum = "系统信息"
 )

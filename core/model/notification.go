@@ -2,7 +2,7 @@ package model
 
 import (
 	"fmt"
-	"strconv"
+	"strings"
 )
 
 // Notification notification entity
@@ -12,7 +12,7 @@ type Notification struct {
 	CustomCode string       `json:"custom_code"`
 	Details    string       `json:"details"`
 	Link       *string      `gorm:"size:1024" json:"link"`
-	Category   CategoryEnum `json:"category_id"`
+	Category   CategoryEnum `json:"category"`
 	Read       bool         `gorm:"default:false" json:"read"`
 }
 
@@ -62,24 +62,19 @@ var (
 		return newNotification(email, "N1004", fmt.Sprintf(`{"id":"%s"}`, email))
 	}
 
-	// AttendanceUpdated attendance updated
-	AttendanceUpdated = func(email string) *Notification {
-		return newNotification(email, "N1005", fmt.Sprintf(`{"id":"%s"}`, email))
-	}
-
 	// EbookUpdated ebook updated
 	EbookUpdated = func(email string) *Notification {
-		return newNotification(email, "N1006", fmt.Sprintf(`{"id":"%s"}`, email))
+		return newNotification(email, "N1005", fmt.Sprintf(`{"id":"%s"}`, email))
 	}
 
 	// GrowthProfileUpdated growth profile template updated
 	GrowthProfileUpdated = func(email string) *Notification {
-		return newNotification(email, "N1007", fmt.Sprintf(`{"id":"%s"}`, email))
+		return newNotification(email, "N1006", fmt.Sprintf(`{"id":"%s"}`, email))
 	}
 
 	// GrowthProfileTemplateUpdated growth profile template updated
 	GrowthProfileTemplateUpdated = func(email string) *Notification {
-		return newNotification(email, "N1008", fmt.Sprintf(`{"id":"%s"}`, email))
+		return newNotification(email, "N1007", fmt.Sprintf(`{"id":"%s"}`, email))
 	}
 )
 
@@ -106,8 +101,30 @@ var (
 	}
 )
 
+// Attendance
+var (
+	// AttendanceUpdated attendance updated
+	AttendanceUpdated = func(email string) *Notification {
+		return newNotification(email, "N4001", fmt.Sprintf(`{"id":"%s"}`, email))
+	}
+)
+
 // resolveCategory resolve category by custom code
 func resolveCategory(customCode string) CategoryEnum {
-	result, _ := strconv.Atoi(customCode[1:2])
-	return CategoryEnum(result)
+	if strings.HasPrefix(customCode, "N5") {
+		return CategoryAgentSmith
+	}
+	if strings.HasPrefix(customCode, "N4") {
+		return CategoryAttendance
+	}
+	if strings.HasPrefix(customCode, "N3") {
+		return CategoryNutrition
+	}
+	if strings.HasPrefix(customCode, "N2") {
+		return CategoryPhysique
+	}
+	if strings.HasPrefix(customCode, "N1") {
+		return CategoryGrowthProfile
+	}
+	return CategoryReserved
 }
