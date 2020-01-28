@@ -17,5 +17,6 @@ func (a *App) initRouter() {
 	s.GET("/pupils", handler.GetPupils)
 	s.POST("/pupils", handler.UpdatePupils)
 	s.GET("/teachers", handler.GetTeachers)
+	s.POST("/teacher", handler.UpdateTeacher)
 	s.POST("/teachers", handler.UpdateTeachers)
 }

@@ -4,7 +4,7 @@ package model
 type Teacher struct {
 	BaseModel
 	Name      string  `json:"name" csv:"姓名"`
-	Email     *string `gorm:"-" json:"email" csv:"邮箱,omitempty"`
+	Email     *string `json:"email" csv:"邮箱,omitempty"`
 	User      *User   `json:"user" csv:"-"`
 	UserID    *uint   `json:"-" csv:"-"`
 	Class     *Class  `json:"class" csv:"-"`

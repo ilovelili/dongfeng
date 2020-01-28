@@ -7,7 +7,7 @@ const (
 	// CategoryReserved reserved
 	CategoryReserved CategoryEnum = ""
 	// CategoryGrowthProfile growth profile
-	CategoryGrowthProfile CategoryEnum = "成长档案"
+	CategoryGrowthProfile CategoryEnum = "基本信息"
 	// CategoryPhysique physique
 	CategoryPhysique CategoryEnum = "体格信息"
 	// CategoryNutrition nutrition

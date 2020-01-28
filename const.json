@@ -7,6 +7,7 @@
         "400-104": "failed to parse classes",
         "400-105": "failed to parse pupils",
         "400-106": "failed to parse teachers",
+        "400-107": "failed to bind teacher",
         "401-000": "invalid access token",
         "401-001": "invalid userId",
         "401-002": "failed to parse user",

@@ -20,6 +20,35 @@ func GetTeachers(c echo.Context) error {
 	return c.JSON(http.StatusOK, teachers)
 }
 
+// UpdateTeacher POST /teacher
+func UpdateTeacher(c echo.Context) error {
+	userInfo, _ := c.Get("userInfo").(model.User)
+	teacher := new(model.Teacher)
+	if err := c.Bind(teacher); err != nil {
+		return util.ResponseError(c, http.StatusBadRequest, "400-107", "failed to bind teacher", err)
+	}
+
+	if teacher.Email != nil {
+		user, err := userRepo.FindByEmail(*teacher.Email)
+		// found
+		if err == nil {
+			teacher.User = user
+			teacher.UserID = &user.ID
+		} else {
+			teacher.User = nil
+			teacher.UserID = nil
+		}
+	}
+
+	teacher.CreatedBy = userInfo.Email
+	if err := teacherRepo.Save(teacher); err != nil {
+		return util.ResponseError(c, http.StatusInternalServerError, "500-111", "failed to save teachers", err)
+	}
+
+	notify(model.TeacherListUpdated(userInfo.Email))
+	return c.NoContent(http.StatusOK)
+}
+
 // UpdateTeachers POST /teachers
 func UpdateTeachers(c echo.Context) error {
 	userInfo, _ := c.Get("userInfo").(model.User)

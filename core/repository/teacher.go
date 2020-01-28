@@ -15,12 +15,14 @@ func NewTeacherRepository() *Teacher {
 func (r *Teacher) Find(class, year string) ([]*model.Teacher, error) {
 	teachers := []*model.Teacher{}
 	query := db().Joins("LEFT JOIN classes ON classes.id = teachers.class_id").Joins("LEFT JOIN users ON users.id = teachers.user_id")
-	if class != "" && year != "" {
-		query = query.Where("teachers.class_id IS NULL OR (classes.year = ? AND classes.name = ?)", year, class)
+	if class == "-" {
+		query = query.Where("teachers.class_id IS NULL")
+	} else if class != "" && year != "" {
+		query = query.Where("classes.year = ? AND classes.name = ?", year, class)
 	} else if class == "" && year != "" {
 		query = query.Where("teachers.class_id IS NULL OR classes.year = ?", year)
 	} else if class != "" && year == "" {
-		query = query.Where("teachers.class_id IS NULL OR classes.name = ?", class)
+		query = query.Where("classes.name = ?", class)
 	}
 
 	err := query.Preload("Class").Preload("User").Find(&teachers).Error
@@ -29,7 +31,13 @@ func (r *Teacher) Find(class, year string) ([]*model.Teacher, error) {
 
 // Save save teacher
 func (r *Teacher) Save(teacher *model.Teacher) error {
-	return db().Model(&model.Teacher{}).Where("id = ?", teacher.ID).Update("class_id", teacher.ClassID, "name", teacher.Name).Error
+	updateColumns := map[string]interface{}{
+		"email":      teacher.Email,
+		"user_id":    teacher.UserID,
+		"created_by": teacher.CreatedBy,
+		"updated_at": teacher.UpdatedAt,
+	}
+	return db().Model(&model.Teacher{}).Where("teachers.ID = ?", teacher.ID).Update(updateColumns).Error
 }
 
 // DeleteInsert delete and insert teachers
