@@ -11,6 +11,7 @@ var (
 	userRepo         = repository.NewUserRepository()
 	classRepo        = repository.NewClassRepository()
 	pupilRepo        = repository.NewPupilRepository()
+	teacherRepo      = repository.NewTeacherRepository()
 	notificationRepo = repository.NewNotificationRepository()
 )
 

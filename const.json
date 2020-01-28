@@ -6,6 +6,7 @@
         "400-103": "failed to bind notifications",
         "400-104": "failed to parse classes",
         "400-105": "failed to parse pupils",
+        "400-106": "failed to parse teachers",
         "401-000": "invalid access token",
         "401-001": "invalid userId",
         "401-002": "failed to parse user",
@@ -19,7 +20,9 @@
         "500-106": "failed to save classes",
         "500-107": "failed to get pupils",
         "500-108": "failed to save pupils",
-        "500-109": "failed to get user"
+        "500-109": "failed to get user",
+        "500-110": "failed to get teachers",
+        "500-111": "failed to save teachers"
     },
     "notifications": {
         "N5001": "{{time}} {{title}}{{details}}",
@@ -35,5 +38,13 @@
         "N3002": "{{time}} 菜单信息更新",
         "N3003": "{{time}} 食材信息更新",
         "N4001": "{{time}} 出勤信息更新"
+    },
+    "roles": {
+        "0": "未设定",
+        "1": "超级管理员",
+        "2": "管理员",
+        "3": "教师",
+        "4": "保健",
+        "5": "其他"
     }
 }

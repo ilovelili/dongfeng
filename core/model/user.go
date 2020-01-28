@@ -23,4 +23,6 @@ const (
 	RoleNormal RoleEnum = 3
 	// RoleHealth role health
 	RoleHealth RoleEnum = 4
+	// RoleOthers others role
+	RoleOthers RoleEnum = 5
 )
