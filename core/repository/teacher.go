@@ -16,11 +16,11 @@ func (r *Teacher) Find(class, year string) ([]*model.Teacher, error) {
 	teachers := []*model.Teacher{}
 	query := db().Joins("LEFT JOIN classes ON classes.id = teachers.class_id").Joins("LEFT JOIN users ON users.id = teachers.user_id")
 	if class != "" && year != "" {
-		query = query.Where("teachers.class_id = 0 OR (classes.year = ? AND classes.name = ?)", year, class)
+		query = query.Where("teachers.class_id IS NULL OR (classes.year = ? AND classes.name = ?)", year, class)
 	} else if class == "" && year != "" {
-		query = query.Where("teachers.class_id = 0 OR classes.year = ?", year)
+		query = query.Where("teachers.class_id IS NULL OR classes.year = ?", year)
 	} else if class != "" && year == "" {
-		query = query.Where("teachers.class_id = 0 OR classes.name = ?", class)
+		query = query.Where("teachers.class_id IS NULL OR classes.name = ?", class)
 	}
 
 	err := query.Preload("Class").Preload("User").Find(&teachers).Error
@@ -47,15 +47,17 @@ func (r *Teacher) DeleteInsert(teachers []*model.Teacher) error {
 
 	classIDs := []uint{}
 	for _, teacher := range teachers {
-		classIDFound := false
-		for _, classID := range classIDs {
-			if teacher.ClassID != nil && *teacher.ClassID == classID {
-				classIDFound = true
+		if teacher.ClassID != nil {
+			classIDFound := false
+			for _, classID := range classIDs {
+				if *teacher.ClassID == classID {
+					classIDFound = true
+				}
 			}
-		}
 
-		if !classIDFound {
-			classIDs = append(classIDs, *teacher.ClassID)
+			if !classIDFound {
+				classIDs = append(classIDs, *teacher.ClassID)
+			}
 		}
 	}
 
