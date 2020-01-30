@@ -7,7 +7,7 @@ type Teacher struct{}
 
 // NewTeacherRepository new teacher repository
 func NewTeacherRepository() *Teacher {
-	db().AutoMigrate(&model.Teacher{}, &model.User{}, &model.User{})
+	db().AutoMigrate(&model.Teacher{}, &model.User{}, &model.Class{})
 	return new(Teacher)
 }
 

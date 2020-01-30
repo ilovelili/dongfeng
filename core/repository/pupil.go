@@ -28,6 +28,20 @@ func (r *Pupil) Find(class, year string) ([]*model.Pupil, error) {
 	return pupils, err
 }
 
+// FindByPupilID find pupils by pupilID
+func (r *Pupil) FindByPupilID(pupilID uint) ([]*model.Pupil, error) {
+	pupils := []*model.Pupil{}
+	err := db().Where("pupils.id = ?", pupilID).Preload("Class").Find(&pupils).Error
+	return pupils, err
+}
+
+// FindByClassID find pupils by classID
+func (r *Pupil) FindByClassID(classID uint) ([]*model.Pupil, error) {
+	pupils := []*model.Pupil{}
+	err := db().Where("pupils.class_id = ?", classID).Preload("Class").Find(&pupils).Error
+	return pupils, err
+}
+
 // DeleteInsert delete and insert pupils
 func (r *Pupil) DeleteInsert(pupils []*model.Pupil) error {
 	tx := db().Begin()

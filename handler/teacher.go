@@ -14,18 +14,18 @@ func GetTeachers(c echo.Context) error {
 	class, year := c.QueryParam("class"), c.QueryParam("year")
 	teachers, err := teacherRepo.Find(class, year)
 	if err != nil {
-		return util.ResponseError(c, http.StatusInternalServerError, "500-110", "failed to get teachers", err)
+		return util.ResponseError(c, "500-110", "failed to get teachers", err)
 	}
 
 	return c.JSON(http.StatusOK, teachers)
 }
 
-// UpdateTeacher POST /teacher
+// UpdateTeacher PUT /teacher
 func UpdateTeacher(c echo.Context) error {
 	userInfo, _ := c.Get("userInfo").(model.User)
 	teacher := new(model.Teacher)
 	if err := c.Bind(teacher); err != nil {
-		return util.ResponseError(c, http.StatusBadRequest, "400-107", "failed to bind teacher", err)
+		return util.ResponseError(c, "400-107", "failed to bind teacher", err)
 	}
 
 	if teacher.Email != nil {
@@ -42,25 +42,25 @@ func UpdateTeacher(c echo.Context) error {
 
 	teacher.CreatedBy = userInfo.Email
 	if err := teacherRepo.Save(teacher); err != nil {
-		return util.ResponseError(c, http.StatusInternalServerError, "500-111", "failed to save teachers", err)
+		return util.ResponseError(c, "500-111", "failed to save teachers", err)
 	}
 
 	notify(model.TeacherListUpdated(userInfo.Email))
 	return c.NoContent(http.StatusOK)
 }
 
-// UpdateTeachers POST /teachers
-func UpdateTeachers(c echo.Context) error {
+// SaveTeachers POST /teachers
+func SaveTeachers(c echo.Context) error {
 	userInfo, _ := c.Get("userInfo").(model.User)
 	file, _, err := c.Request().FormFile("file")
 	if err != nil {
-		return util.ResponseError(c, http.StatusBadRequest, "400-106", "failed to parse teachers", err)
+		return util.ResponseError(c, "400-106", "failed to parse teachers", err)
 	}
 	defer file.Close()
 
 	teachers := []*model.Teacher{}
 	if err := gocsv.Unmarshal(file, &teachers); err != nil {
-		return util.ResponseError(c, http.StatusBadRequest, "400-106", "failed to parse teachers", err)
+		return util.ResponseError(c, "400-106", "failed to parse teachers", err)
 	}
 
 	for _, teacher := range teachers {
@@ -77,7 +77,7 @@ func UpdateTeachers(c echo.Context) error {
 	}
 
 	if err := teacherRepo.DeleteInsert(teachers); err != nil {
-		return util.ResponseError(c, http.StatusInternalServerError, "500-111", "failed to save teachers", err)
+		return util.ResponseError(c, "500-111", "failed to save teachers", err)
 	}
 
 	notify(model.TeacherListUpdated(userInfo.Email))

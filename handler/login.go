@@ -14,11 +14,11 @@ func Login(c echo.Context) error {
 	user, err := userRepo.FindByEmail(userInfo.Email)
 	if err != nil {
 		if err = userRepo.Save(&userInfo); err != nil {
-			return util.ResponseError(c, http.StatusInternalServerError, "500-100", "failed to save user", err)
+			return util.ResponseError(c, "500-100", "failed to save user", err)
 		}
 
 		if user, err = userRepo.FindByEmail(userInfo.Email); err != nil {
-			return util.ResponseError(c, http.StatusInternalServerError, "500-109", "failed to get user", err)
+			return util.ResponseError(c, "500-109", "failed to get user", err)
 		}
 	}
 

@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/ilovelili/dongfeng/util"
 	"github.com/labstack/echo"
@@ -40,17 +39,17 @@ func (a *Authenticator) Skipper(c echo.Context) bool {
 func (a *Authenticator) TokenValidator(accessToken string, c echo.Context) (bool, error) {
 	userID, err := a.client.parseAccessToken(accessToken)
 	if err != nil {
-		return false, util.ResponseError(c, http.StatusUnauthorized, "401-100", "unauthorized", err)
+		return false, util.ResponseError(c, "401-100", "unauthorized", err)
 	}
 
 	userInfo, err := a.client.parseUserInfo(userID)
 	if err != nil {
-		return false, util.ResponseError(c, http.StatusUnauthorized, "401-101", "unauthorized", err)
+		return false, util.ResponseError(c, "401-101", "unauthorized", err)
 	}
 
 	// user name can't be empty
 	if userInfo.Name == "" {
-		return false, util.ResponseError(c, http.StatusUnauthorized, "401-102", "failed to parse user", err)
+		return false, util.ResponseError(c, "401-102", "failed to parse user", err)
 	}
 
 	// add a email if email empty

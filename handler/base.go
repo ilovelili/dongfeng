@@ -12,6 +12,7 @@ var (
 	classRepo        = repository.NewClassRepository()
 	pupilRepo        = repository.NewPupilRepository()
 	teacherRepo      = repository.NewTeacherRepository()
+	attendanceRepo   = repository.NewAttendanceRepository()
 	notificationRepo = repository.NewNotificationRepository()
 )
 

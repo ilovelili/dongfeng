@@ -8,15 +8,23 @@ func (a *App) initRouter() {
 	s.Static("/", "")
 	s.GET("/healthz", handler.Healthcheck)
 	s.GET("/login", handler.Login)
+
 	s.GET("/notifications", handler.GetNotifications)
 	s.POST("/notifications", handler.SetNotificationsRead)
+
 	s.POST("/user/upload", handler.UploadAvatar)
-	s.POST("/user/update", handler.UpdateUser)
+	s.PUT("/user/update", handler.UpdateUser)
+
 	s.GET("/classes", handler.GetClasses)
-	s.POST("/classes", handler.UpdateClasses)
+	s.POST("/classes", handler.SaveClasses)
+
 	s.GET("/pupils", handler.GetPupils)
-	s.POST("/pupils", handler.UpdatePupils)
+	s.POST("/pupils", handler.SavePupils)
+
 	s.GET("/teachers", handler.GetTeachers)
-	s.POST("/teacher", handler.UpdateTeacher)
-	s.POST("/teachers", handler.UpdateTeachers)
+	s.PUT("/teacher", handler.UpdateTeacher)
+	s.POST("/teachers", handler.SaveTeachers)
+
+	s.GET("/attendances", handler.GetAttendances)
+	s.PUT("/attendance", handler.UpdateAttendance)
 }

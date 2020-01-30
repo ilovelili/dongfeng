@@ -2,6 +2,8 @@ package util
 
 import (
 	"github.com/labstack/echo"
+	"strconv"
+	"strings"
 )
 
 // Response contains custom status code, message and data
@@ -12,7 +14,24 @@ type Response struct {
 }
 
 // ResponseError renders JSON response for error
-func ResponseError(c echo.Context, httpStatus int, code string, message string, err error) error {
-	c.JSON(httpStatus, Response{Code: code, Message: message})
+func ResponseError(c echo.Context, code string, message string, err error) error {
+	c.JSON(parseHTTPStatus(code), Response{Code: code, Message: message})
 	return err
+}
+
+// parseHTTPStatus
+func parseHTTPStatus(code string) (httpStatus int) {
+	httpStatus = 500
+	codeSegments := strings.Split(code, "-")
+	if len(codeSegments) != 2 {
+		return
+	}
+
+	_httpStatus, err := strconv.Atoi(codeSegments[0])
+	if err != nil {
+		return
+	}
+
+	httpStatus = _httpStatus
+	return
 }

@@ -14,24 +14,24 @@ func GetClasses(c echo.Context) error {
 	year := c.QueryParam("year")
 	classes, err := classRepo.Find(year)
 	if err != nil {
-		return util.ResponseError(c, http.StatusInternalServerError, "500-105", "failed to get classes", err)
+		return util.ResponseError(c, "500-105", "failed to get classes", err)
 	}
 
 	return c.JSON(http.StatusOK, classes)
 }
 
-// UpdateClasses POST /classes
-func UpdateClasses(c echo.Context) error {
+// SaveClasses POST /classes
+func SaveClasses(c echo.Context) error {
 	userInfo, _ := c.Get("userInfo").(model.User)
 	file, _, err := c.Request().FormFile("file")
 	if err != nil {
-		return util.ResponseError(c, http.StatusBadRequest, "400-104", "failed to parse classes", err)
+		return util.ResponseError(c, "400-104", "failed to parse classes", err)
 	}
 	defer file.Close()
 
 	classes := []*model.Class{}
 	if err := gocsv.Unmarshal(file, &classes); err != nil {
-		return util.ResponseError(c, http.StatusBadRequest, "400-104", "failed to parse classes", err)
+		return util.ResponseError(c, "400-104", "failed to parse classes", err)
 	}
 
 	for _, class := range classes {
@@ -39,7 +39,7 @@ func UpdateClasses(c echo.Context) error {
 	}
 
 	if err := classRepo.DeleteInsert(classes); err != nil {
-		return util.ResponseError(c, http.StatusInternalServerError, "500-106", "failed to save classes", err)
+		return util.ResponseError(c, "500-106", "failed to save classes", err)
 	}
 
 	notify(model.ClassListUpdated(userInfo.Email))

@@ -8,6 +8,9 @@
         "400-105": "failed to parse pupils",
         "400-106": "failed to parse teachers",
         "400-107": "failed to bind teacher",
+        "400-108": "invalid class id",
+        "400-109": "invalid pupil id",
+        "400-110": "failed to bind attendance",
         "401-000": "invalid access token",
         "401-001": "invalid userId",
         "401-002": "failed to parse user",
@@ -23,14 +26,17 @@
         "500-108": "failed to save pupils",
         "500-109": "failed to get user",
         "500-110": "failed to get teachers",
-        "500-111": "failed to save teachers"
+        "500-111": "failed to save teachers",
+        "500-112": "failed to get absences",
+        "500-113": "failed to save absences",
+        "500-114": "failed to get holidays"
     },
     "notifications": {
         "N5001": "{{time}} {{title}}{{details}}",
         "N1001": "{{time}} 用户信息更新",
         "N1002": "{{time}} 班级名单更新",
         "N1003": "{{time}} 班级信息更新",
-        "N1004": "{{time}} 教师信息更新",        
+        "N1004": "{{time}} 教师信息更新",
         "N1005": "{{time}} 电子书更新",
         "N1006": "{{time}} 成长档案更新",
         "N1007": "{{time}} 成长档案模板更新",
@@ -47,5 +53,10 @@
         "3": "教师",
         "4": "保健",
         "5": "其他"
+    },
+    "holidays": {
+        "workingDays": 0,
+        "weekends": 1,
+        "holidays": 2
     }
 }

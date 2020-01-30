@@ -21,14 +21,14 @@ func UploadAvatar(c echo.Context) error {
 
 	form, err := c.MultipartForm()
 	if err != nil {
-		return util.ResponseError(c, http.StatusBadRequest, "400-100", "failed to parse multipart form", err)
+		return util.ResponseError(c, "400-100", "failed to parse multipart form", err)
 	}
 
 	files := form.File["image"]
 	locations := []string{}
 	for _, file := range files {
 		if !supportedImageMimeType(file.Header["Content-Type"]) {
-			return util.ResponseError(c, http.StatusBadRequest, "400-101", "unsupported mimetype", err)
+			return util.ResponseError(c, "400-101", "unsupported mimetype", err)
 		}
 
 		src, err := file.Open()
@@ -53,7 +53,7 @@ func UploadAvatar(c echo.Context) error {
 
 		resp := aliyunsvc.Upload(opts)
 		if resp.Error != nil {
-			return util.ResponseError(c, http.StatusInternalServerError, "500-103", "failed to upload avatar", err)
+			return util.ResponseError(c, "500-103", "failed to upload avatar", err)
 		}
 
 		locations = append(locations, resp.Location)
@@ -63,17 +63,17 @@ func UploadAvatar(c echo.Context) error {
 	return c.JSON(http.StatusOK, locations)
 }
 
-// UpdateUser POST /user/update
+// UpdateUser PUT /user/update
 func UpdateUser(c echo.Context) error {
 	userInfo, _ := c.Get("userInfo").(model.User)
 	user := new(model.User)
 	if err := c.Bind(user); err != nil {
-		return util.ResponseError(c, http.StatusBadRequest, "400-102", "failed to bind user", err)
+		return util.ResponseError(c, "400-102", "failed to bind user", err)
 	}
 
 	existingUser, err := userRepo.FindByEmail(user.Email)
 	if err != nil {
-		return util.ResponseError(c, http.StatusInternalServerError, "500-104", "no user", err)
+		return util.ResponseError(c, "500-104", "no user", err)
 	}
 
 	user.ID = existingUser.ID
@@ -89,7 +89,7 @@ func UpdateUser(c echo.Context) error {
 
 	err = userRepo.Save(user)
 	if err != nil {
-		return util.ResponseError(c, http.StatusInternalServerError, "500-100", "failed to save user", err)
+		return util.ResponseError(c, "500-100", "failed to save user", err)
 	}
 
 	notify(model.ProfileUpdated(userInfo.Email))
