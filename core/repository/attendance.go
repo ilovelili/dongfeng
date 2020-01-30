@@ -73,7 +73,41 @@ func (r *Attendance) Save(absence *model.Absence) error {
 	return db().Model(&model.Absence{}).Save(absence).Error
 }
 
-// Delete soft delete absence
+// SaveAll save all absences, skip the items for already saved
+func (r *Attendance) SaveAll(absences []*model.Absence) error {
+	candidates := []*model.Absence{}
+	for _, absence := range absences {
+		// if already there, skip
+		_absence := new(model.Absence)
+		if db().Where("absences.date = ? AND absences.pupil_id = ?", absence.Date, absence.PupilID).Find(&_absence).RecordNotFound() {
+			candidates = append(candidates, absence)
+		}
+	}
+
+	tx := db().Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	for _, candidate := range candidates {
+		// set ID to 0 to insert instead of update
+		candidate.ID = 0
+		if err := tx.Save(candidate).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit().Error
+}
+
+// Delete hard delete absence
 func (r *Attendance) Delete(absence *model.Absence) error {
-	return db().Model(&model.Absence{}).Delete(absence).Error
+	return db().Unscoped().Model(&model.Absence{}).Delete(absence).Error
 }

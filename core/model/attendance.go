@@ -6,9 +6,9 @@ import "github.com/ilovelili/dongfeng/util"
 type Absence struct {
 	BaseModel
 	Pupil     Pupil
-	PupilID   uint
-	Date      string
-	CreatedBy string
+	PupilID   uint   `csv:"园儿ID"`
+	Date      string `csv:"日期"`
+	CreatedBy string `csv:"-"`
 }
 
 // Attendance attendence entity

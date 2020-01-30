@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gocarina/gocsv"
 	"github.com/ilovelili/dongfeng/core/model"
 	"github.com/ilovelili/dongfeng/util"
 	"github.com/labstack/echo"
@@ -160,6 +161,32 @@ func UpdateAttendance(c echo.Context) error {
 		if err := attendanceRepo.Delete(absence); err != nil {
 			return util.ResponseError(c, "500-113", "failed to save absence", err)
 		}
+	}
+
+	notify(model.AttendanceUpdated(userInfo.Email))
+	return c.NoContent(http.StatusOK)
+}
+
+// SaveAbsences POST /attendances
+func SaveAbsences(c echo.Context) error {
+	userInfo, _ := c.Get("userInfo").(model.User)
+	file, _, err := c.Request().FormFile("file")
+	if err != nil {
+		return util.ResponseError(c, "400-111", "failed to parse absences", err)
+	}
+	defer file.Close()
+
+	absences := []*model.Absence{}
+	if err := gocsv.Unmarshal(file, &absences); err != nil {
+		return util.ResponseError(c, "400-111", "failed to parse absences", err)
+	}
+
+	for _, absence := range absences {
+		absence.CreatedBy = userInfo.Email
+	}
+
+	if err := attendanceRepo.SaveAll(absences); err != nil {
+		return util.ResponseError(c, "500-113", "failed to save absence", err)
 	}
 
 	notify(model.AttendanceUpdated(userInfo.Email))

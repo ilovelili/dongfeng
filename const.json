@@ -11,6 +11,8 @@
         "400-108": "invalid class id",
         "400-109": "invalid pupil id",
         "400-110": "failed to bind attendance",
+        "400-111": "failed to parse absences",
+        "400-112": "invalid master id",
         "401-000": "invalid access token",
         "401-001": "invalid userId",
         "401-002": "failed to parse user",
@@ -29,7 +31,8 @@
         "500-111": "failed to save teachers",
         "500-112": "failed to get absences",
         "500-113": "failed to save absences",
-        "500-114": "failed to get holidays"
+        "500-114": "failed to get holidays",
+        "500-115": "failed to get physique masters"
     },
     "notifications": {
         "N5001": "{{time}} {{title}}{{details}}",
@@ -55,8 +58,15 @@
         "5": "其他"
     },
     "holidays": {
-        "workingDays": 0,
+        "working_days": 0,
         "weekends": 1,
         "holidays": 2
+    },
+    "masters": {
+        "age_height_weight_p": "1",
+        "age_height_weight_sd": "2",
+        "bmi": "3",
+        "height_to_weight_p": "4",
+        "height_to_weight_sd": "5"
     }
 }

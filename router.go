@@ -27,4 +27,7 @@ func (a *App) initRouter() {
 
 	s.GET("/attendances", handler.GetAttendances)
 	s.PUT("/attendance", handler.UpdateAttendance)
+	s.POST("/attendances", handler.SaveAbsences)
+
+	s.GET("masters", handler.GetMasters)
 }
