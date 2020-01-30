@@ -55,7 +55,7 @@ func (r *Attendance) FindAbsencesByPupil(pupilID uint, from, to string) ([]*mode
 // FindAbsencesByClass find absences by class
 func (r *Attendance) FindAbsencesByClass(classID uint, from, to string) ([]*model.Absence, error) {
 	absences := []*model.Absence{}
-	query := db().Joins("pupils ON absences.pupil_id = pupils.id AND pupils.class_id = ?", classID)
+	query := db().Joins("JOIN pupils ON absences.pupil_id = pupils.id AND pupils.class_id = ?", classID)
 	if from != "" && to != "" {
 		query = query.Where("absences.date BETWEEN ? AND ?", from, to)
 	} else if from != "" && to == "" {

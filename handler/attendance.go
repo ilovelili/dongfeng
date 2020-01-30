@@ -21,12 +21,11 @@ func GetAttendances(c echo.Context) error {
 		attendances      = []*model.Attendance{}
 		year             = c.QueryParam("year")
 		class            = c.QueryParam("class")
-		pupil            = c.QueryParam("pupil")
+		pupil            = c.QueryParam("name")
 		from             = c.QueryParam("from")
 		to               = c.QueryParam("to")
 	)
 
-	userInfo, _ := c.Get("userInfo").(model.User)
 	if from == "" {
 		from = util.TimeToString(time.Now().AddDate(0, -1, 0))
 	}
@@ -49,10 +48,10 @@ func GetAttendances(c echo.Context) error {
 	}
 
 	// retrieve pupils
-	if classID != 0 {
-		pupils, err = pupilRepo.FindByClassID(classID)
-	} else if pupilID != 0 {
+	if pupilID != 0 {
 		pupils, err = pupilRepo.FindByPupilID(pupilID)
+	} else if classID != 0 {
+		pupils, err = pupilRepo.FindByClassID(classID)
 	} else {
 		pupils, err = pupilRepo.Find("", year)
 	}
@@ -61,10 +60,10 @@ func GetAttendances(c echo.Context) error {
 	}
 
 	// retrieve absences
-	if classID != 0 {
-		absences, err = attendanceRepo.FindAbsencesByClass(classID, from, to)
-	} else if pupilID != 0 {
+	if pupilID != 0 {
 		absences, err = attendanceRepo.FindAbsencesByPupil(pupilID, from, to)
+	} else if classID != 0 {
+		absences, err = attendanceRepo.FindAbsencesByClass(classID, from, to)
 	} else {
 		absences, err = attendanceRepo.FindAbsences(from, to)
 	}
@@ -130,7 +129,6 @@ DAILYLOOP:
 		}
 	}
 
-	notify(model.AttendanceUpdated(userInfo.Email))
 	return c.JSON(http.StatusOK, attendances)
 }
 

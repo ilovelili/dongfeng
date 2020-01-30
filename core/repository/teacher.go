@@ -15,14 +15,12 @@ func NewTeacherRepository() *Teacher {
 func (r *Teacher) Find(class, year string) ([]*model.Teacher, error) {
 	teachers := []*model.Teacher{}
 	query := db().Joins("LEFT JOIN classes ON classes.id = teachers.class_id").Joins("LEFT JOIN users ON users.id = teachers.user_id")
-	if class == "-" {
-		query = query.Where("teachers.class_id IS NULL")
-	} else if class != "" && year != "" {
-		query = query.Where("classes.year = ? AND classes.name = ?", year, class)
+	if class != "" && year != "" {
+		query = query.Where("classes.year = ? AND classes.id = ?", year, class)
 	} else if class == "" && year != "" {
 		query = query.Where("teachers.class_id IS NULL OR classes.year = ?", year)
 	} else if class != "" && year == "" {
-		query = query.Where("classes.name = ?", class)
+		query = query.Where("classes.id = ?", class)
 	}
 
 	err := query.Preload("Class").Preload("User").Find(&teachers).Error

@@ -17,11 +17,11 @@ func (r *Pupil) Find(class, year string) ([]*model.Pupil, error) {
 
 	query := db().Joins("JOIN classes ON classes.id = pupils.class_id")
 	if class != "" && year != "" {
-		query = query.Where("classes.year = ? AND classes.name = ?", year, class)
+		query = query.Where("classes.year = ? AND classes.id = ?", year, class)
 	} else if class == "" && year != "" {
 		query = query.Where("classes.year = ?", year)
 	} else if class != "" && year == "" {
-		query = query.Where("classes.name = ?", class)
+		query = query.Where("classes.id = ?", class)
 	}
 
 	err := query.Preload("Class").Find(&pupils).Error
