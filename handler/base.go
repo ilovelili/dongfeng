@@ -14,6 +14,7 @@ var (
 	teacherRepo      = repository.NewTeacherRepository()
 	attendanceRepo   = repository.NewAttendanceRepository()
 	physiqueRepo     = repository.NewPhysiqueRepository()
+	ingredientRepo   = repository.NewIngredientRepository()
 	notificationRepo = repository.NewNotificationRepository()
 )
 

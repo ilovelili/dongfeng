@@ -33,6 +33,8 @@ func (a *App) initRouter() {
 	s.PUT("/physique", handler.UpdatePhysique)
 	s.POST("/physiques", handler.SavePhysiques)
 
+	s.GET("/ingredients", handler.GetIngredients)
+
 	s.GET("/masters", handler.GetMasters)
 
 }

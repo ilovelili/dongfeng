@@ -36,7 +36,8 @@
         "500-115": "failed to get physique masters",
         "500-116": "failed to get physiques",
         "500-117": "failed to save physiques",
-        "500-118": "failed to resolve physiques"
+        "500-118": "failed to resolve physiques",
+        "500-119": "failed to get ingredients"
     },
     "notifications": {
         "N5001": "{{time}} {{title}}{{details}}",
