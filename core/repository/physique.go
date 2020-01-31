@@ -16,6 +16,7 @@ func NewPhysiqueRepository() *Physique {
 		&model.BMIMaster{},
 		&model.HeightToWeightPMaster{},
 		&model.HeightToWeightSDMaster{},
+		&model.Pupil{},
 	)
 	return new(Physique)
 }
@@ -56,15 +57,54 @@ func (r *Physique) SelectBMIMasters() ([]*model.BMIMaster, error) {
 }
 
 // Find physique by pupil ID
-func (r *Physique) Find(pupil string) ([]*model.Physique, error) {
+func (r *Physique) Find(pupilIDs []uint) ([]*model.Physique, error) {
 	physiques := []*model.Physique{}
-	err := db().Where("physiques.pupil_id = ?", pupil).Find(&physiques).Error
+	err := db().Where("physiques.pupil_id IN (?)", pupilIDs).Preload("Pupil").Preload("Pupil.Class").Find(&physiques).Error
 	return physiques, err
 }
 
-// FindAll find all physiques
-func (r *Physique) FindAll() ([]*model.Physique, error) {
+// FindAll find all physiques by year
+func (r *Physique) FindAll(year string) ([]*model.Physique, error) {
 	physiques := []*model.Physique{}
-	err := db().Find(&physiques).Error
+	err := db().
+		Joins("JOIN pupils ON physiques.pupil_id = pupils.id").
+		Joins("JOIN classes ON pupils.class_id = classes.id AND classes.year = ?", year).
+		Preload("Pupil").Preload("Pupil.Class").
+		Find(&physiques).Error
+
 	return physiques, err
+}
+
+// Save save physique
+func (r *Physique) Save(physique *model.Physique) error {
+	return db().Save(physique).Error
+}
+
+// SaveAll save all physiques
+func (r *Physique) SaveAll(physiques []*model.Physique) error {
+	tx := db().Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	for _, physique := range physiques {
+		_physique := new(model.Physique)
+		if tx.Where("physiques.pupil_id = ?", physique.ID).Find(&_physique).RecordNotFound() {
+			// if not found, insert. else update
+			physique.ID = 0
+		}
+
+		if err := tx.Save(physique).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit().Error
 }

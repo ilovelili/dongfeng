@@ -26,26 +26,26 @@ const (
 // Physique physique entity
 type Physique struct {
 	BaseModel
-	Pupil            Pupil   `json:"pupil"`
-	PupilID          uint    `json:"pupil_id"`
-	Gender           string  `json:"gender"`
-	BirthDate        string  `json:"birth_date"`
-	ExamDate         string  `json:"exam_date"`
-	Age              string  `json:"age"`
-	AgeComparison    float64 `json:"age_cmp"`
-	Height           float64 `json:"height"`
-	HeightP          string  `json:"height_p"`  // Height P Zone
-	HeightSD         string  `json:"height_sd"` // Height SD Zone
-	Weight           float64 `json:"weight"`
-	WeightP          string  `json:"weight_p"`         // Weight P Zone
-	WeightSD         string  `json:"weight_sd"`        // Weight SD Zone
-	HeightToWeightP  string  `json:"height_weight_p"`  // Height to Weight P Zone
-	HeightToWeightSD string  `json:"height_weight_sd"` // Height to Weight P Zone
-	BMI              float64 `json:"bmi"`              // BMI for age > 5
-	BMISD            string  `json:"bmi_sd"`           // BMI SD Zone
-	FatCofficient    float64 `json:"fat_cofficient"`   // FatCofficient for age < 5
-	Conclusion       string  `json:"conclusion"`
-	CreatedBy        string  `json:"created_by"`
+	Pupil            Pupil   `json:"pupil" csv:"-"`
+	PupilID          uint    `json:"pupil_id" csv:"园儿ID"`
+	Gender           string  `json:"gender" csv:"性别"`
+	BirthDate        string  `json:"birth_date" csv:"出生日期"`
+	ExamDate         string  `json:"exam_date" csv:"体检日期"`
+	Age              string  `json:"age" csv:"-"`
+	AgeComparison    float64 `json:"age_cmp" csv:"-"`
+	Height           float64 `json:"height" csv:"身高"`
+	HeightP          string  `json:"height_p" csv:"-"`  // Height P Zone
+	HeightSD         string  `json:"height_sd" csv:"-"` // Height SD Zone
+	Weight           float64 `json:"weight" csv:"体重"`
+	WeightP          string  `json:"weight_p" csv:"-"`         // Weight P Zone
+	WeightSD         string  `json:"weight_sd" csv:"-"`        // Weight SD Zone
+	HeightToWeightP  string  `json:"height_weight_p" csv:"-"`  // Height to Weight P Zone
+	HeightToWeightSD string  `json:"height_weight_sd" csv:"-"` // Height to Weight P Zone
+	BMI              float64 `json:"bmi" csv:"-"`              // BMI for age > 5
+	BMISD            string  `json:"bmi_sd" csv:"-"`           // BMI SD Zone
+	FatCofficient    float64 `json:"fat_cofficient" csv:"-"`   // FatCofficient for age < 5
+	Conclusion       string  `json:"conclusion" csv:"-"`
+	CreatedBy        string  `json:"created_by" csv:"-"`
 }
 
 // AgeHeightWeightPMaster age height / weight p standard master

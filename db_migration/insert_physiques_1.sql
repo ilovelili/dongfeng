@@ -1,3 +1,13 @@
+insert into `age_height_weight_p_masters` (`height_or_weight`,`gender`,`age_min`,`age_max`,`p3`,`p10`,`p20`,`p50`,`p80`,`p97`) values ('w','男',2,2.5,10.97,11.72,12.30,13.41,14.95,16.19);
+insert into `age_height_weight_p_masters` (`height_or_weight`,`gender`,`age_min`,`age_max`,`p3`,`p10`,`p20`,`p50`,`p80`,`p97`) values ('w','男',2.5,3,12.01,12.74,13.20,14.24,15.82,17.91);
+insert into `age_height_weight_p_masters` (`height_or_weight`,`gender`,`age_min`,`age_max`,`p3`,`p10`,`p20`,`p50`,`p80`,`p97`) values ('w','男',3,3.5,12.75,13.40,14.05,15.31,16.65,19.05);
+insert into `age_height_weight_p_masters` (`height_or_weight`,`gender`,`age_min`,`age_max`,`p3`,`p10`,`p20`,`p50`,`p80`,`p97`) values ('w','男',3.5,4,13.33,14.17,14.74,16.11,18.41,21.23);
+insert into `age_height_weight_p_masters` (`height_or_weight`,`gender`,`age_min`,`age_max`,`p3`,`p10`,`p20`,`p50`,`p80`,`p97`) values ('w','男',4,4.5,14.45,15.18,16.27,17.62,19.36,21.30);
+insert into `age_height_weight_p_masters` (`height_or_weight`,`gender`,`age_min`,`age_max`,`p3`,`p10`,`p20`,`p50`,`p80`,`p97`) values ('w','男',4.5,5,15.17,16.00,16.70,18.93,20.73,23.70);
+insert into `age_height_weight_p_masters` (`height_or_weight`,`gender`,`age_min`,`age_max`,`p3`,`p10`,`p20`,`p50`,`p80`,`p97`) values ('w','男',5,5.5,16.28,17.50,18.19,20.00,22.82,25.65);
+insert into `age_height_weight_p_masters` (`height_or_weight`,`gender`,`age_min`,`age_max`,`p3`,`p10`,`p20`,`p50`,`p80`,`p97`) values ('w','男',5.5,6,17.11,18.17,19.14,21.32,23.93,27.46);
+insert into `age_height_weight_p_masters` (`height_or_weight`,`gender`,`age_min`,`age_max`,`p3`,`p10`,`p20`,`p50`,`p80`,`p97`) values ('w','男',6,7,18.60,19.54,20.65,23.39,25.84,30.88);
+
 insert into `age_height_weight_p_masters` (`height_or_weight`,`gender`,`age_min`,`age_max`,`p3`,`p10`,`p20`,`p50`,`p80`,`p97`) values ('h','男',2,2.5,85.11,87.26,89.00,92.00,94.76,97.33);
 insert into `age_height_weight_p_masters` (`height_or_weight`,`gender`,`age_min`,`age_max`,`p3`,`p10`,`p20`,`p50`,`p80`,`p97`) values ('h','男',2.5,3,89.50,91.70,93.28,96.00,99.16,103.12);
 insert into `age_height_weight_p_masters` (`height_or_weight`,`gender`,`age_min`,`age_max`,`p3`,`p10`,`p20`,`p50`,`p80`,`p97`) values ('h','男',3,3.5,92.62,94.75,96.40,98.95,102.60,106.50);
