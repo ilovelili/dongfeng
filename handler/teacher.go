@@ -63,7 +63,38 @@ func SaveTeachers(c echo.Context) error {
 		return util.ResponseError(c, "400-106", "failed to parse teachers", err)
 	}
 
+	classMap := make(map[string]map[string]uint)
 	for _, teacher := range teachers {
+		if teacher.CSVClass != nil && teacher.CSVYear != nil {
+			class := *teacher.CSVClass
+			year := *teacher.CSVYear
+			if _, ok := classMap[year]; !ok {
+				classes, err := classRepo.Find(year)
+				if err != nil {
+					// "500-105": "failed to get classes",
+					return util.ResponseError(c, "500-105", "failed to get classes", err)
+				}
+
+				classMap[year] = make(map[string]uint)
+				for _, class := range classes {
+					classMap[year][class.Name] = class.ID
+				}
+			}
+
+		CLASSLOOP:
+			for k, v := range classMap {
+				if year == k {
+					for className, classID := range v {
+						if className == class {
+							_id := &classID
+							teacher.ClassID = _id
+							break CLASSLOOP
+						}
+					}
+				}
+			}
+		}
+
 		if teacher.Email != nil {
 			user, err := userRepo.FindByEmail(*teacher.Email)
 			// found

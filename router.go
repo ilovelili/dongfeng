@@ -34,6 +34,7 @@ func (a *App) initRouter() {
 	s.POST("/physiques", handler.SavePhysiques)
 
 	s.GET("/ingredients", handler.GetIngredients)
+	s.POST("/ingredients", handler.SaveIngredients)
 
 	s.GET("/masters", handler.GetMasters)
 

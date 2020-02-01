@@ -34,7 +34,35 @@ func SavePupils(c echo.Context) error {
 		return util.ResponseError(c, "400-105", "failed to parse pupils", err)
 	}
 
+	// year|classname|classid map
+	classMap := make(map[string]map[string]uint)
 	for _, pupil := range pupils {
+		year := pupil.CSVYear
+		if _, ok := classMap[year]; !ok {
+			classes, err := classRepo.Find(year)
+			if err != nil {
+				// "500-105": "failed to get classes",
+				return util.ResponseError(c, "500-105", "failed to get classes", err)
+			}
+
+			classMap[year] = make(map[string]uint)
+			for _, class := range classes {
+				classMap[year][class.Name] = class.ID
+			}
+		}
+
+	CLASSLOOP:
+		for k, v := range classMap {
+			if year == k {
+				for className, classID := range v {
+					if className == pupil.CSVClass {
+						pupil.ClassID = classID
+						break CLASSLOOP
+					}
+				}
+			}
+		}
+
 		pupil.CreatedBy = userInfo.Email
 	}
 

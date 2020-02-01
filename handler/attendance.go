@@ -36,14 +36,14 @@ func GetAttendances(c echo.Context) error {
 	if class != "" {
 		_classID, err := strconv.ParseUint(class, 10, 64)
 		if err != nil {
-			return util.ResponseError(c, "400-108", "invalid class id", err)
+			return util.ResponseError(c, "400-108", "invalid class", err)
 		}
 		classID = uint(_classID)
 	}
 	if pupil != "" {
 		_pupilID, err := strconv.ParseUint(pupil, 10, 64)
 		if err != nil {
-			return util.ResponseError(c, "400-109", "invalid pupil id", err)
+			return util.ResponseError(c, "400-109", "invalid pupil", err)
 		}
 		pupilID = uint(_pupilID)
 	}
