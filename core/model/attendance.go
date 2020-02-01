@@ -5,9 +5,12 @@ import "github.com/ilovelili/dongfeng/util"
 // Absence absence entity
 type Absence struct {
 	BaseModel
-	Pupil     Pupil
-	PupilID   uint   `csv:"园儿ID"`
+	CSVYear   string `gorm:"-" csv:"学年"`
 	Date      string `csv:"日期"`
+	CSVClass  string `gorm:"-" csv:"班级"`
+	CSVName   string `gorm:"-" csv:"姓名"`
+	Pupil     Pupil  `csv:"-"`
+	PupilID   uint   `csv:"-"`
 	CreatedBy string `csv:"-"`
 }
 

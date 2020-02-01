@@ -181,7 +181,44 @@ func SaveAbsences(c echo.Context) error {
 		return util.ResponseError(c, "400-111", "failed to parse absences", err)
 	}
 
+	// year | classname | pupilname | pupil id
+	classPupilMap := make(map[string]map[string]map[string]uint)
 	for _, absence := range absences {
+		year := absence.CSVYear
+		if _, ok := classPupilMap[year]; !ok {
+			classes, err := classRepo.Find(year)
+			if err != nil {
+				return util.ResponseError(c, "500-105", "failed to get classes", err)
+			}
+
+			classPupilMap[year] = make(map[string]map[string]uint)
+			for _, class := range classes {
+				pupils, err := pupilRepo.FindByClassID(class.ID)
+				if err != nil {
+					return util.ResponseError(c, "500-107", "failed to get pupils", err)
+				}
+
+				classPupilMap[year][class.Name] = make(map[string]uint)
+				for _, pupil := range pupils {
+					classPupilMap[year][class.Name][pupil.Name] = pupil.ID
+				}
+			}
+		}
+
+		found := false
+		if map1, ok := classPupilMap[absence.CSVYear]; ok {
+			if map2, ok := map1[absence.CSVClass]; ok {
+				if id, ok := map2[absence.CSVName]; ok {
+					absence.PupilID = id
+					found = true
+				}
+			}
+		}
+
+		if !found {
+			return util.ResponseError(c, "400-109", "invalid pupil", err)
+		}
+
 		absence.CreatedBy = userInfo.Email
 	}
 

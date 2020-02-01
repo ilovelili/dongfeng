@@ -41,7 +41,6 @@ func SavePupils(c echo.Context) error {
 		if _, ok := classMap[year]; !ok {
 			classes, err := classRepo.Find(year)
 			if err != nil {
-				// "500-105": "failed to get classes",
 				return util.ResponseError(c, "500-105", "failed to get classes", err)
 			}
 

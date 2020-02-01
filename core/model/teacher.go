@@ -10,6 +10,6 @@ type Teacher struct {
 	User      *User   `json:"user" csv:"-"`
 	UserID    *uint   `json:"-" csv:"-"`
 	Class     *Class  `json:"class" csv:"-"`
-	ClassID   *uint   `json:"class_id" csv:"班级ID,omitempty"`
+	ClassID   *uint   `json:"class_id" csv:"-"`
 	CreatedBy string  `json:"created_by" csv:"-"`
 }
