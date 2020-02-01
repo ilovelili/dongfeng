@@ -71,6 +71,19 @@
         "weekends": 1,
         "holidays": 2
     },
+    "menus": {
+        "breakfast_or_lunch": {
+            "0": "全部",
+            "1": "早餐",
+            "2": "午餐",
+            "3": "早点"
+        },
+        "junior_or_senior": {
+            "0": "全部",
+            "1": "小班",
+            "2": "中班/大班"
+        }
+    },    
     "masters": {
         "age_height_weight_p": "1",
         "age_height_weight_sd": "2",
