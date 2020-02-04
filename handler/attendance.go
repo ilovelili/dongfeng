@@ -104,7 +104,7 @@ DAILYLOOP:
 			}
 		}
 
-		absentPupilList := []model.Pupil{}
+		absentPupilList := []*model.Pupil{}
 		for _, absence := range absences {
 			if absence.Date == currentDate {
 				absentPupilList = append(absentPupilList, absence.Pupil)

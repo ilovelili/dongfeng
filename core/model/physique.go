@@ -26,7 +26,7 @@ const (
 // Physique physique entity
 type Physique struct {
 	BaseModel
-	Pupil            Pupil   `json:"pupil" csv:"-"`
+	Pupil            *Pupil  `json:"pupil" csv:"-"`
 	PupilID          uint    `json:"pupil_id" csv:"园儿ID"`
 	Gender           string  `json:"gender" csv:"性别"`
 	BirthDate        string  `json:"birth_date" csv:"出生日期"`

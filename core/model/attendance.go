@@ -9,7 +9,7 @@ type Absence struct {
 	Date      string `csv:"日期"`
 	CSVClass  string `gorm:"-" csv:"班级"`
 	CSVName   string `gorm:"-" csv:"姓名"`
-	Pupil     Pupil  `csv:"-"`
+	Pupil     *Pupil `csv:"-"`
 	PupilID   uint   `csv:"-"`
 	CreatedBy string `csv:"-"`
 }

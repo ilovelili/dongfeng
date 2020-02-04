@@ -41,7 +41,8 @@
         "500-118": "failed to resolve physiques",
         "500-119": "failed to get ingredients",
         "500-120": "failed to get ingredient categories",
-        "500-121": "failed to save ingredients"
+        "500-121": "failed to save ingredients",
+        "500-122": "failed to get menus"        
     },
     "notifications": {
         "N5001": "{{time}} {{title}}{{details}}",

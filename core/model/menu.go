@@ -1,5 +1,74 @@
 package model
 
+import "strconv"
+
+// BreakfastOrLunch breakfast or lunch emum
+type BreakfastOrLunch uint
+
+const (
+	// AllMenuType all
+	AllMenuType BreakfastOrLunch = 0
+	// Breakfast breakfast
+	Breakfast BreakfastOrLunch = 1
+	// Lunch lunch
+	Lunch BreakfastOrLunch = 2
+	// Snack snack
+	Snack BreakfastOrLunch = 3
+)
+
+// String to string
+func (b BreakfastOrLunch) String() string {
+	return strconv.Itoa(int(b))
+}
+
+// JuniorOrSenior juinor class menu or senior class menu
+type JuniorOrSenior uint
+
+const (
+	// AllClass all
+	AllClass JuniorOrSenior = 0
+	// Junior junior class
+	Junior JuniorOrSenior = 1
+	// Senior senior class
+	Senior JuniorOrSenior = 2
+)
+
+// String to string
+func (j JuniorOrSenior) String() string {
+	return strconv.Itoa(int(j))
+}
+
+// Menu entity
+type Menu struct {
+	BaseModel
+	Date             string           `json:"date"`
+	Recipe           *Recipe          `json:"recipe"`
+	RecipeID         uint             `json:"recipe_id"`
+	BreakfastOrLunch BreakfastOrLunch `json:"breakfast_or_lunch"`
+	JuniorOrSenior   JuniorOrSenior   `json:"junior_or_senior"`
+}
+
+// Recipe entity
+type Recipe struct {
+	BaseModel
+	Name              string           `json:"name" csv:"菜品名称"`
+	Ingredients       []*Ingredient    `json:"ingredients" gorm:"many2many:recipe_ingredients" csv:"-"`
+	CSVIngredient     string           `gorm:"-" json:"-" csv:"原料名称"`
+	RecipeNutrition   *RecipeNutrition `json:"nutrition" csv:"-"`
+	RecipeNutritionID *uint            `csv:"nutrition_id"`
+}
+
+// RecipeNutrition entity
+type RecipeNutrition struct {
+	BaseModel
+	Recipe       string  `json:"recipe" csv:"recipe"`
+	Carbohydrate float64 `json:"carbohydrate" csv:"carbohydrate"`
+	Dietaryfiber float64 `json:"dietaryfiber" csv:"dietaryfiber"`
+	Protein      float64 `json:"protein" csv:"protein"`
+	Fat          float64 `json:"fat" csv:"fat"`
+	Heat         float64 `json:"heat" csv:"heat"`
+}
+
 // Ingredient ingredient entity
 type Ingredient struct {
 	BaseModel

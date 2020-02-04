@@ -15,6 +15,7 @@ var (
 	attendanceRepo   = repository.NewAttendanceRepository()
 	physiqueRepo     = repository.NewPhysiqueRepository()
 	ingredientRepo   = repository.NewIngredientRepository()
+	menuRepo         = repository.NewMenuRepository()
 	notificationRepo = repository.NewNotificationRepository()
 )
 
