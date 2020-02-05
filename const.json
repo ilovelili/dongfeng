@@ -16,6 +16,8 @@
         "400-113": "failed to parse physiques",
         "400-114": "failed to parse ingredients",
         "400-115": "invalid ingredient category",
+        "400-116": "invalid profile template",
+        "400-117": "invalid profile",
         "401-000": "invalid access token",
         "401-001": "invalid userId",
         "401-002": "failed to parse user",
@@ -42,7 +44,15 @@
         "500-119": "failed to get ingredients",
         "500-120": "failed to get ingredient categories",
         "500-121": "failed to save ingredients",
-        "500-122": "failed to get menus"        
+        "500-122": "failed to get menus",
+        "500-123": "failed to get recipes",
+        "500-124": "failed to get ebooks",
+        "500-125": "failed to get profile templates",
+        "500-126": "failed to save profile templates",
+        "500-127": "failed to delete profile templates",
+        "500-128": "failed to get profiles",
+        "500-129": "failed to save profiles",
+        "500-130": "failed to delete profiles"
     },
     "notifications": {
         "N5001": "{{time}} {{title}}{{details}}",

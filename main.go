@@ -108,9 +108,18 @@ func (a *App) initRouter() {
 	s.POST("/physiques", handler.SavePhysiques)
 
 	s.GET("/menus", handler.GetMenus)
-
+	s.GET("/recipes", handler.GetRecipes)
 	s.GET("/ingredients", handler.GetIngredients)
 	s.POST("/ingredients", handler.SaveIngredients)
+
+	s.GET("/profileTemplate", handler.GetProfileTemplate)
+	s.GET("/profileTemplateContent", handler.GetProfileTemplateContent)
+	s.POST("/profileTemplate", handler.SaveProfileTemplate)
+	s.DELETE("/profileTemplate", handler.DeleteProfileTemplate)
+
+	s.GET("/profileTemplates", handler.GetProfileTemplates)
+
+	s.GET("/ebooks", handler.GetEbooks)
 
 	s.GET("/masters", handler.GetMasters)
 }

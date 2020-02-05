@@ -16,6 +16,9 @@ var (
 	physiqueRepo     = repository.NewPhysiqueRepository()
 	ingredientRepo   = repository.NewIngredientRepository()
 	menuRepo         = repository.NewMenuRepository()
+	recipeRepo       = repository.NewRecipeRepository()
+	ebookRepo        = repository.NewEbookRepository()
+	profileRepo      = repository.NewProfileRepository()
 	notificationRepo = repository.NewNotificationRepository()
 )
 

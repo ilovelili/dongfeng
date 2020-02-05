@@ -13,10 +13,14 @@ func NewRecipeRepository() *Recipe {
 	return new(Recipe)
 }
 
-// Find find recipes by names
-func (r *Recipe) Find(names []string) ([]*model.Recipe, error) {
+// Find find recipes by ids
+func (r *Recipe) Find(ids []string) ([]*model.Recipe, error) {
 	recipes := []*model.Recipe{}
-	err := db().Where("recipes.name IN (?)", names).Preload("Ingredient").Preload("IngredientNutrition").Find(&recipes).Error
+	query := db()
+	if len(ids) > 0 {
+		query = db().Where("recipes.id IN (?)", ids)
+	}
+	err := query.Preload("Ingredients").Preload("RecipeNutrition").Find(&recipes).Error
 	return recipes, err
 }
 
