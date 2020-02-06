@@ -18,6 +18,7 @@
         "400-115": "invalid ingredient category",
         "400-116": "invalid profile template",
         "400-117": "invalid profile",
+        "400-118": "failed to bind profile",
         "401-000": "invalid access token",
         "401-001": "invalid userId",
         "401-002": "failed to parse user",

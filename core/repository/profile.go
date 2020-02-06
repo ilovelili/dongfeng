@@ -45,88 +45,69 @@ func (r *Profile) DeleteTemplate(name string) error {
 	return db().Delete(template).Error
 }
 
-// FindAllProfiles find all profiles
-func (r *Profile) FindAllProfiles() ([]*model.Profile, error) {
-	profiles := []*model.Profile{}
-	err := db().Find(&profiles).Error
-	return profiles, err
+// FindProfiles find profiles
+func (r *Profile) FindProfiles(year string) ([]*model.Profile, error) {
+	_profiles1 := []*model.Profile{}
+	err := db().
+		Joins("JOIN pupils ON profiles.pupil_id = pupils.id").Joins("JOIN classes ON pupils.class_id = classes.id").Where("classes.year = ? AND profiles.class_id IS NULL", year).
+		Preload("Template").Preload("Pupil").Preload("Pupil.Class").
+		Find(&_profiles1).Error
+	if err != nil {
+		return []*model.Profile{}, err
+	}
+
+	_profiles2 := []*model.Profile{}
+	err = db().Joins("JOIN classes ON profiles.class_id = classes.id").Where("classes.year = ? AND profiles.pupil_id IS NULL", year).Find(&_profiles2).Error
+	if err != nil {
+		return []*model.Profile{}, err
+	}
+	return append(_profiles1, _profiles2...), err
 }
 
-// FindProfile find profile
-func (r *Profile) FindProfile(pupilID uint, date string) (*model.Profile, error) {
+// FindProfile find profile by id
+func (r *Profile) FindProfile(id string) (*model.Profile, error) {
 	profile := new(model.Profile)
-	err := db().Where("pupil_id = ? AND date = ?", pupilID, date).First(&profile).Error
+	err := db().Where("id = ?", id).
+		Preload("Template").Preload("Pupil").Preload("Pupil.Class").
+		First(&profile).Error
 	return profile, err
 }
 
 // FindPrevProfile find previous profile
 func (r *Profile) FindPrevProfile(pupilID uint, date string) (*model.Profile, error) {
 	profile := new(model.Profile)
-	err := db().Where("pupil_id = ? AND date < ? ORDER BY date desc", pupilID, date).First(&profile).Error
+	err := db().Where("pupil_id = ? AND date < ? ORDER BY date desc", pupilID, date).
+		Preload("Template").Preload("Pupil").Preload("Pupil.Class").
+		First(&profile).Error
 	return profile, err
 }
 
 // FindNextProfile find next profile
 func (r *Profile) FindNextProfile(pupilID uint, date string) (*model.Profile, error) {
 	profile := new(model.Profile)
-	err := db().Where("pupil_id = ? AND date > ? ORDER BY date desc", pupilID, date).First(&profile).Error
+	err := db().Where("pupil_id = ? AND date > ? ORDER BY date desc", pupilID, date).
+		Preload("Template").Preload("Pupil").Preload("Pupil.Class").
+		First(&profile).Error
 	return profile, err
 }
 
-// SaveProfiles save profiles
-func (r *Profile) SaveProfiles(profiles []*model.Profile) error {
-	tx := db().Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		}
-	}()
-
-	if err := tx.Error; err != nil {
-		return err
-	}
-
-	for _, profile := range profiles {
+// SaveProfile save profile
+func (r *Profile) SaveProfile(profile *model.Profile) error {
+	if profile.ID != 0 {
 		_profile := new(model.Profile)
-		if err := db().Where("pupil_id = ? AND date = ?", profile.PupilID, profile.Date).Find(&_profile).Error; err == nil {
+		if err := db().Where("(pupil_id = ? OR class_id = ?) AND date = ?", profile.PupilID, profile.ClassID, profile.Date).Find(&_profile).Error; err == nil {
 			profile.ID = _profile.ID
 		}
-
-		if err := tx.Save(profile).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
 	}
-
-	return tx.Commit().Error
+	return db().Save(profile).Error
 }
 
-// DeleteProfiles delete profiles
-func (r *Profile) DeleteProfiles(profiles []*model.Profile) error {
-	tx := db().Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		}
-	}()
-
-	if err := tx.Error; err != nil {
+// DeleteProfile delete profile
+func (r *Profile) DeleteProfile(profile *model.Profile) error {
+	_profile := new(model.Profile)
+	if err := db().Where("(pupil_id = ? OR class_id = ?) AND date = ?", profile.PupilID, profile.ClassID, profile.Date).First(&_profile).Error; err != nil {
 		return err
 	}
-
-	for _, profile := range profiles {
-		_profile := new(model.Profile)
-		if err := db().Where("pupil_id = ? AND date = ?", profile.PupilID, profile.Date).First(&_profile).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-
-		profile.ID = _profile.ID
-		if err := tx.Delete(profile).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-	}
-
-	return tx.Commit().Error
+	profile.ID = _profile.ID
+	return db().Delete(profile).Error
 }

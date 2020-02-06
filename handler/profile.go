@@ -3,6 +3,7 @@ package handler
 import (
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/ilovelili/dongfeng/core/model"
 	"github.com/ilovelili/dongfeng/util"
@@ -29,6 +30,9 @@ func GetProfileTemplateContent(c echo.Context) error {
 	template, err := profileRepo.FindTemplateByName(name)
 	if err != nil {
 		return util.ResponseError(c, "500-125", "failed to get profile templates", err)
+	}
+	if template.Profile == nil {
+		return c.JSONBlob(http.StatusOK, []byte{})
 	}
 	return c.JSONBlob(http.StatusOK, []byte(*template.Profile))
 }
@@ -76,4 +80,94 @@ func GetProfileTemplates(c echo.Context) error {
 		return util.ResponseError(c, "500-125", "failed to get profile templates", err)
 	}
 	return c.JSON(http.StatusOK, templates)
+}
+
+// GetProfiles GET /profiles
+func GetProfiles(c echo.Context) error {
+	year := c.QueryParam("year")
+	profiles, err := profileRepo.FindProfiles(year)
+	if err != nil {
+		return util.ResponseError(c, "500-128", "failed to get profiles", err)
+	}
+
+	// omit profile content
+	_profiles := []*model.Profile{}
+	for _, profile := range profiles {
+		_profiles = append(_profiles, &model.Profile{
+			BaseModel:  profile.BaseModel,
+			Pupil:      profile.Pupil,
+			PupilID:    profile.PupilID,
+			ClassID:    profile.ClassID,
+			Template:   profile.Template,
+			TemplateID: profile.TemplateID,
+			Date:       profile.Date,
+			CreatedBy:  profile.CreatedBy,
+		})
+	}
+	return c.JSON(http.StatusOK, _profiles)
+}
+
+// SaveProfile POST /profile
+func SaveProfile(c echo.Context) error {
+	userInfo, _ := c.Get("userInfo").(model.User)
+	profile := new(model.Profile)
+	if err := c.Bind(profile); err != nil {
+		return util.ResponseError(c, "400-118", "failed to bind profile", err)
+	}
+
+	profile.CreatedBy = userInfo.Email
+
+	if (profile.ClassID != nil && *profile.ClassID != 0) && (profile.PupilID != nil && *profile.PupilID != 0) {
+		profile.ClassID = nil
+	}
+
+	err := profileRepo.SaveProfile(profile)
+	if err != nil {
+		return util.ResponseError(c, "500-129", "failed to save profiles", err)
+	}
+
+	notify(model.GrowthProfileUpdated(userInfo.Email))
+	return c.NoContent(http.StatusOK)
+}
+
+// GetProfileContent GET /profileContent
+func GetProfileContent(c echo.Context) error {
+	id := c.QueryParam("id")
+	profile, err := profileRepo.FindProfile(id)
+	if err != nil {
+		return util.ResponseError(c, "500-128", "failed to get profiles", err)
+	}
+	if profile.Profile == nil {
+		if profile.Template == nil {
+			return c.JSONBlob(http.StatusOK, []byte{})
+		}
+		return c.JSONBlob(http.StatusOK, []byte(*profile.Template.Profile))
+	}
+	return c.JSONBlob(http.StatusOK, []byte(*profile.Profile))
+}
+
+// SaveProfileContent POST /profileContent
+func SaveProfileContent(c echo.Context) error {
+	userInfo, _ := c.Get("userInfo").(model.User)
+	id := c.QueryParam("id")
+	_id, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return util.ResponseError(c, "400-108", "invalid class", err)
+	}
+
+	profile := new(model.Profile)
+	profile.ID = uint(_id)
+	body, err := ioutil.ReadAll(c.Request().Body)
+	if err != nil {
+		return util.ResponseError(c, "400-116", "invalid profile template", err)
+	}
+	content := string(body)
+	profile.Profile = &content
+	profile.CreatedBy = userInfo.Email
+
+	if err := profileRepo.SaveProfile(profile); err != nil {
+		return util.ResponseError(c, "500-129", "failed to save profiles", err)
+	}
+
+	return c.NoContent(http.StatusOK)
 }

@@ -11,9 +11,10 @@ type ProfileTemplate struct {
 // Profile profile entity
 type Profile struct {
 	BaseModel
-	Pupil      Pupil            `json:"pupil"`
-	PupilID    uint             `json:"pupil_id"`
-	Template   *ProfileTemplate `json:"profile_template`
+	Pupil      *Pupil           `json:"pupil"`
+	PupilID    *uint            `json:"pupil_id"`
+	ClassID    *uint            `json:"class_id"`
+	Template   *ProfileTemplate `json:"profile_template"`
 	TemplateID uint             `json:"template_id"`
 	Date       string           `json:"date"`
 	Profile    *string          `sql:"size:999999" json:"profile"`
