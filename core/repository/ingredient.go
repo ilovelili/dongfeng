@@ -11,7 +11,7 @@ type Ingredient struct{}
 
 // NewIngredientRepository new ingredient repository
 func NewIngredientRepository() *Ingredient {
-	db().AutoMigrate(&model.Menu{}, &model.Recipe{}, &model.RecipeNutrition{}, &model.Ingredient{})
+	db().AutoMigrate(&model.Menu{}, &model.Recipe{}, &model.RecipeNutrition{}, &model.Ingredient{}, &model.IngredientCategory{})
 	return new(Ingredient)
 }
 

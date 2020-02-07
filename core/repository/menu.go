@@ -7,7 +7,7 @@ type Menu struct{}
 
 // NewMenuRepository new menu repository
 func NewMenuRepository() *Menu {
-	db().AutoMigrate(&model.Menu{}, &model.Recipe{}, &model.RecipeNutrition{}, &model.Ingredient{})
+	db().AutoMigrate(&model.Menu{}, &model.Recipe{}, &model.RecipeNutrition{}, &model.Ingredient{}, &model.IngredientCategory{})
 	return new(Menu)
 }
 

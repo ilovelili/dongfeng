@@ -9,7 +9,7 @@ type Recipe struct{}
 
 // NewRecipeRepository new recipe repository
 func NewRecipeRepository() *Recipe {
-	db().AutoMigrate(&model.Menu{}, &model.Recipe{}, &model.RecipeNutrition{}, &model.Ingredient{})
+	db().AutoMigrate(&model.Menu{}, &model.Recipe{}, &model.RecipeNutrition{}, &model.Ingredient{}, &model.IngredientCategory{})
 	return new(Recipe)
 }
 

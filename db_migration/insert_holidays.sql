@@ -1,5 +1,3 @@
-use `dongfeng`
-
 insert into holidays (`from`, `to`, `description`, `created_by`) values ('2020-01-01', '2020-01-01', '元旦', 'route666@live.cn');
 insert into holidays (`from`, `to`, `description`, `created_by`) values ('2020-01-24', '2020-01-30', '春节', 'route666@live.cn');
 insert into holidays (`from`, `to`, `description`, `created_by`) values ('2020-01-18', '2020-02-16', '寒假', 'route666@live.cn');
