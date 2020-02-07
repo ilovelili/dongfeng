@@ -25,6 +25,13 @@ func (r *Ebook) Find(year string) ([]*model.Ebook, error) {
 	return ebooks, err
 }
 
+// FindByID find by id
+func (r *Ebook) FindByID(id uint) (*model.Ebook, error) {
+	ebook := new(model.Ebook)
+	err := db().Where("id = ?", id).Preload("Pupil").Preload("Pupil.Class").Find(&ebook).Error
+	return ebook, err
+}
+
 // FindByPupilID find by pupil id
 func (r *Ebook) FindByPupilID(pupilID uint) (*model.Ebook, error) {
 	ebook := new(model.Ebook)

@@ -1,6 +1,9 @@
 package repository
 
-import "github.com/ilovelili/dongfeng/core/model"
+import (
+	"github.com/ilovelili/dongfeng/core/model"
+	"github.com/jinzhu/gorm"
+)
 
 // Profile repository
 type Profile struct{}
@@ -47,21 +50,12 @@ func (r *Profile) DeleteTemplate(name string) error {
 
 // FindProfiles find profiles
 func (r *Profile) FindProfiles(year string) ([]*model.Profile, error) {
-	_profiles1 := []*model.Profile{}
+	profiles := []*model.Profile{}
 	err := db().
-		Joins("JOIN pupils ON profiles.pupil_id = pupils.id").Joins("JOIN classes ON pupils.class_id = classes.id").Where("classes.year = ? AND profiles.class_id IS NULL", year).
+		Joins("JOIN pupils ON profiles.pupil_id = pupils.id").Joins("JOIN classes ON pupils.class_id = classes.id").Where("classes.year = ?", year).
 		Preload("Template").Preload("Pupil").Preload("Pupil.Class").
-		Find(&_profiles1).Error
-	if err != nil {
-		return []*model.Profile{}, err
-	}
-
-	_profiles2 := []*model.Profile{}
-	err = db().Joins("JOIN classes ON profiles.class_id = classes.id").Where("classes.year = ? AND profiles.pupil_id IS NULL", year).Find(&_profiles2).Error
-	if err != nil {
-		return []*model.Profile{}, err
-	}
-	return append(_profiles1, _profiles2...), err
+		Find(&profiles).Error
+	return profiles, err
 }
 
 // FindProfile find profile by id
@@ -74,40 +68,46 @@ func (r *Profile) FindProfile(id string) (*model.Profile, error) {
 }
 
 // FindPrevProfile find previous profile
-func (r *Profile) FindPrevProfile(pupilID uint, date string) (*model.Profile, error) {
+func (r *Profile) FindPrevProfile(pupilID, date string) (*model.Profile, error) {
 	profile := new(model.Profile)
-	err := db().Where("pupil_id = ? AND date < ? ORDER BY date desc", pupilID, date).
+	err := db().Where("pupil_id = ? AND date < ?", pupilID, date).
 		Preload("Template").Preload("Pupil").Preload("Pupil.Class").
+		Order("date desc").
 		First(&profile).Error
+
+	if err == gorm.ErrRecordNotFound {
+		err = nil
+	}
 	return profile, err
 }
 
 // FindNextProfile find next profile
-func (r *Profile) FindNextProfile(pupilID uint, date string) (*model.Profile, error) {
+func (r *Profile) FindNextProfile(pupilID, date string) (*model.Profile, error) {
 	profile := new(model.Profile)
-	err := db().Where("pupil_id = ? AND date > ? ORDER BY date desc", pupilID, date).
+	err := db().Where("pupil_id = ? AND date > ?", pupilID, date).
 		Preload("Template").Preload("Pupil").Preload("Pupil.Class").
+		Order("date desc").
 		First(&profile).Error
+
+	if err == gorm.ErrRecordNotFound {
+		err = nil
+	}
 	return profile, err
 }
 
 // SaveProfile save profile
 func (r *Profile) SaveProfile(profile *model.Profile) error {
-	if profile.ID != 0 {
+	if profile.ID == 0 {
 		_profile := new(model.Profile)
-		if err := db().Where("(pupil_id = ? OR class_id = ?) AND date = ?", profile.PupilID, profile.ClassID, profile.Date).Find(&_profile).Error; err == nil {
+		if err := db().Where("pupil_id AND date = ?", profile.PupilID, profile.Date).Find(&_profile).Error; err == nil {
 			profile.ID = _profile.ID
 		}
+		return db().Save(profile).Error
 	}
-	return db().Save(profile).Error
+	return db().Model(&model.Profile{}).Update("profile", profile.Profile).Error
 }
 
 // DeleteProfile delete profile
-func (r *Profile) DeleteProfile(profile *model.Profile) error {
-	_profile := new(model.Profile)
-	if err := db().Where("(pupil_id = ? OR class_id = ?) AND date = ?", profile.PupilID, profile.ClassID, profile.Date).First(&_profile).Error; err != nil {
-		return err
-	}
-	profile.ID = _profile.ID
-	return db().Delete(profile).Error
+func (r *Profile) DeleteProfile(id string) error {
+	return db().Unscoped().Where("id = ?", id).Delete(&model.Profile{}).Error
 }

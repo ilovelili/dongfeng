@@ -97,7 +97,6 @@ func GetProfiles(c echo.Context) error {
 			BaseModel:  profile.BaseModel,
 			Pupil:      profile.Pupil,
 			PupilID:    profile.PupilID,
-			ClassID:    profile.ClassID,
 			Template:   profile.Template,
 			TemplateID: profile.TemplateID,
 			Date:       profile.Date,
@@ -105,6 +104,46 @@ func GetProfiles(c echo.Context) error {
 		})
 	}
 	return c.JSON(http.StatusOK, _profiles)
+}
+
+// GetPreviousProfile GET /profile/prev
+func GetPreviousProfile(c echo.Context) error {
+	pupilID, date := c.QueryParam("name"), c.QueryParam("date")
+	profile, err := profileRepo.FindPrevProfile(pupilID, date)
+	if err != nil {
+		return util.ResponseError(c, "500-128", "failed to get profiles", err)
+	}
+
+	// omit profile content
+	return c.JSON(http.StatusOK, &model.Profile{
+		BaseModel:  profile.BaseModel,
+		Pupil:      profile.Pupil,
+		PupilID:    profile.PupilID,
+		Template:   profile.Template,
+		TemplateID: profile.TemplateID,
+		Date:       profile.Date,
+		CreatedBy:  profile.CreatedBy,
+	})
+}
+
+// GetNextProfile GET /profile/next
+func GetNextProfile(c echo.Context) error {
+	pupilID, date := c.QueryParam("name"), c.QueryParam("date")
+	profile, err := profileRepo.FindNextProfile(pupilID, date)
+	if err != nil {
+		return util.ResponseError(c, "500-128", "failed to get profiles", err)
+	}
+
+	// omit profile content
+	return c.JSON(http.StatusOK, &model.Profile{
+		BaseModel:  profile.BaseModel,
+		Pupil:      profile.Pupil,
+		PupilID:    profile.PupilID,
+		Template:   profile.Template,
+		TemplateID: profile.TemplateID,
+		Date:       profile.Date,
+		CreatedBy:  profile.CreatedBy,
+	})
 }
 
 // SaveProfile POST /profile
@@ -116,14 +155,22 @@ func SaveProfile(c echo.Context) error {
 	}
 
 	profile.CreatedBy = userInfo.Email
-
-	if (profile.ClassID != nil && *profile.ClassID != 0) && (profile.PupilID != nil && *profile.PupilID != 0) {
-		profile.ClassID = nil
-	}
-
 	err := profileRepo.SaveProfile(profile)
 	if err != nil {
 		return util.ResponseError(c, "500-129", "failed to save profiles", err)
+	}
+
+	notify(model.GrowthProfileUpdated(userInfo.Email))
+	return c.NoContent(http.StatusOK)
+}
+
+// DeleteProfile DELETE /profile
+func DeleteProfile(c echo.Context) error {
+	userInfo, _ := c.Get("userInfo").(model.User)
+	id := c.QueryParam("id")
+	err := profileRepo.DeleteProfile(id)
+	if err != nil {
+		return util.ResponseError(c, "500-130", "failed to delete profiles", err)
 	}
 
 	notify(model.GrowthProfileUpdated(userInfo.Email))

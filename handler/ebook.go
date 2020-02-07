@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ilovelili/dongfeng/core/controller"
+	"github.com/ilovelili/dongfeng/core/model"
 	"github.com/ilovelili/dongfeng/util"
 	"github.com/labstack/echo"
 )
@@ -47,4 +49,19 @@ func GetEbooks(c echo.Context) error {
 		return util.ResponseError(c, "500-124", "failed to get ebooks", err)
 	}
 	return c.JSON(http.StatusOK, ebooks)
+}
+
+// UpdateEbook POST /ebook
+func UpdateEbook(c echo.Context) error {
+	ebook := new(model.Ebook)
+	if err := c.Bind(ebook); err != nil {
+		return util.ResponseError(c, "400-119", "failed to bind ebook", err)
+	}
+
+	ebookCtrl := controller.NewEbookController()
+	if err := ebookCtrl.SaveEbook(ebook); err != nil {
+		return util.ResponseError(c, "500-131", "failed to generate ebook", err)
+	}
+
+	return c.NoContent(http.StatusOK)
 }

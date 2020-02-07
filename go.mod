@@ -10,6 +10,7 @@ require (
 	github.com/gocarina/gocsv v0.0.0-20190802110148-150c53a64ab6
 	github.com/ilovelili/aliyun-client v0.0.0-20190605074008-4fbaa377d984
 	github.com/ilovelili/dongfeng-core v0.0.0-20200122070314-4063bef6d0d9
+	github.com/ilovelili/dongfeng-error-code v0.0.0-20200104011801-7e29bf922183
 	github.com/ilovelili/logger v0.0.0-20190923035736-5b5242727684
 	github.com/jinzhu/gorm v1.9.12
 	github.com/jinzhu/now v1.1.1 // indirect
@@ -17,6 +18,7 @@ require (
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/lib/pq v1.3.0 // indirect
+	github.com/mafredri/cdp v0.24.2
 	github.com/mattn/go-sqlite3 v2.0.2+incompatible // indirect
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20200117160349-530e935923ad // indirect
