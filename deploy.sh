@@ -10,7 +10,9 @@ case "$response" in
 
         echo "scping server"
         scp dongfeng dongfeng:/root/dongfeng/bin/
+        scp const.json dongfeng:/root/dongfeng/bin/
         scp dongfeng dongfeng-2:/root/dongfeng/bin/
+        scp const.json dongfeng-2:/root/dongfeng/bin/
 
         echo "cleaning server"
         rm dongfeng 
