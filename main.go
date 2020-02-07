@@ -77,11 +77,12 @@ func (a *App) initServer() {
 // initRouter init router
 func (a *App) initRouter() {
 	s := a.Server
-	s.Static("/", "")
 
 	// add "api" prefix for easier load balancer settings
 	auth := mw.NewAuthenticator()
 	api := s.Group("/api", auth.Middleware())
+
+	api.File("/const.json", "const.json")
 
 	api.GET("/healthz", handler.Healthcheck)
 	api.GET("/login", handler.Login)

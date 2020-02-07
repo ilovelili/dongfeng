@@ -32,7 +32,7 @@ func (a *Authenticator) Middleware() echo.MiddlewareFunc {
 
 // Skipper auth skipper
 func (a *Authenticator) Skipper(c echo.Context) bool {
-	return c.Path() == "/api/healthz" || c.Path() == "/*"
+	return c.Path() == "/api/healthz" || c.Path() == "/*" || c.Path() == "/api/*"
 }
 
 // TokenValidator jwt token validator
