@@ -55,7 +55,7 @@ func (a *App) initServer() {
 		Handler: func(c echo.Context, reqBody, resBody []byte) {
 			req := c.Request()
 			res := c.Response()
-			if req.URL.Path != "/healthz" || res.Status != 200 {
+			if req.URL.Path != "/api/healthz" || res.Status != 200 {
 				logger.Type("access").WithFields(logger.Fields{
 					"remote_ip":       c.RealIP(),
 					"host":            req.Host,
@@ -71,8 +71,6 @@ func (a *App) initServer() {
 		},
 	}))
 
-	auth := mw.NewAuthenticator()
-	e.Use(auth.Middleware())
 	a.Server = e
 }
 
@@ -80,55 +78,60 @@ func (a *App) initServer() {
 func (a *App) initRouter() {
 	s := a.Server
 	s.Static("/", "")
-	s.GET("/healthz", handler.Healthcheck)
-	s.GET("/login", handler.Login)
 
-	s.GET("/notifications", handler.GetNotifications)
-	s.POST("/notifications", handler.SetNotificationsRead)
+	// add "api" prefix for easier load balancer settings
+	auth := mw.NewAuthenticator()
+	api := s.Group("/api", auth.Middleware())
 
-	s.POST("/user/upload", handler.UploadAvatar)
-	s.PUT("/user/update", handler.UpdateUser)
+	api.GET("/healthz", handler.Healthcheck)
+	api.GET("/login", handler.Login)
 
-	s.GET("/classes", handler.GetClasses)
-	s.POST("/classes", handler.SaveClasses)
+	api.GET("/notifications", handler.GetNotifications)
+	api.POST("/notifications", handler.SetNotificationsRead)
 
-	s.GET("/pupils", handler.GetPupils)
-	s.POST("/pupils", handler.SavePupils)
+	api.POST("/user/upload", handler.UploadAvatar)
+	api.PUT("/user/update", handler.UpdateUser)
 
-	s.GET("/teachers", handler.GetTeachers)
-	s.PUT("/teacher", handler.UpdateTeacher)
-	s.POST("/teachers", handler.SaveTeachers)
+	api.GET("/classes", handler.GetClasses)
+	api.POST("/classes", handler.SaveClasses)
 
-	s.GET("/attendances", handler.GetAttendances)
-	s.PUT("/attendance", handler.UpdateAttendance)
-	s.POST("/attendances", handler.SaveAbsences)
+	api.GET("/pupils", handler.GetPupils)
+	api.POST("/pupils", handler.SavePupils)
 
-	s.GET("/physiques", handler.GetPhysiques)
-	s.PUT("/physique", handler.UpdatePhysique)
-	s.POST("/physiques", handler.SavePhysiques)
+	api.GET("/teachers", handler.GetTeachers)
+	api.PUT("/teacher", handler.UpdateTeacher)
+	api.POST("/teachers", handler.SaveTeachers)
 
-	s.GET("/menus", handler.GetMenus)
-	s.GET("/recipes", handler.GetRecipes)
-	s.GET("/ingredients", handler.GetIngredients)
-	s.POST("/ingredients", handler.SaveIngredients)
+	api.GET("/attendances", handler.GetAttendances)
+	api.PUT("/attendance", handler.UpdateAttendance)
+	api.POST("/attendances", handler.SaveAbsences)
 
-	s.GET("/profileTemplateContent", handler.GetProfileTemplateContent)
-	s.POST("/profileTemplate", handler.SaveProfileTemplate)
-	s.DELETE("/profileTemplate", handler.DeleteProfileTemplate)
-	s.GET("/profileTemplates", handler.GetProfileTemplates)
+	api.GET("/physiques", handler.GetPhysiques)
+	api.PUT("/physique", handler.UpdatePhysique)
+	api.POST("/physiques", handler.SavePhysiques)
 
-	s.GET("/profiles", handler.GetProfiles)
-	s.GET("/profile/prev", handler.GetPreviousProfile)
-	s.GET("/profile/next", handler.GetNextProfile)
-	s.POST("/profile", handler.SaveProfile)
-	s.DELETE("profile", handler.DeleteProfile)
-	s.GET("/profileContent", handler.GetProfileContent)
-	s.POST("/profileContent", handler.SaveProfileContent)
+	api.GET("/menus", handler.GetMenus)
+	api.GET("/recipes", handler.GetRecipes)
+	api.GET("/ingredients", handler.GetIngredients)
+	api.POST("/ingredients", handler.SaveIngredients)
 
-	s.GET("/ebooks", handler.GetEbooks)
-	s.POST("/ebook", handler.UpdateEbook)
+	api.GET("/profileTemplateContent", handler.GetProfileTemplateContent)
+	api.POST("/profileTemplate", handler.SaveProfileTemplate)
+	api.DELETE("/profileTemplate", handler.DeleteProfileTemplate)
+	api.GET("/profileTemplates", handler.GetProfileTemplates)
 
-	s.GET("/masters", handler.GetMasters)
+	api.GET("/profiles", handler.GetProfiles)
+	api.GET("/profile/prev", handler.GetPreviousProfile)
+	api.GET("/profile/next", handler.GetNextProfile)
+	api.POST("/profile", handler.SaveProfile)
+	api.DELETE("profile", handler.DeleteProfile)
+	api.GET("/profileContent", handler.GetProfileContent)
+	api.POST("/profileContent", handler.SaveProfileContent)
+
+	api.GET("/ebooks", handler.GetEbooks)
+	api.POST("/ebook", handler.UpdateEbook)
+
+	api.GET("/masters", handler.GetMasters)
 }
 
 func main() {
