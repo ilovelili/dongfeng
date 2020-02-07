@@ -49,7 +49,7 @@ func (r *Ebook) FindByClassID(classID uint) ([]*model.Ebook, error) {
 // Save save ebook
 func (r *Ebook) Save(ebook *model.Ebook, forceUpdate bool) (dirty bool, err error) {
 	_ebook := new(model.Ebook)
-	err = db().Where("converted = 1 AND pupil_id = ? AND date = ?", ebook.PupilID, ebook.Date).First(&_ebook).Error
+	err = db().Where("pupil_id = ? AND date = ?", ebook.PupilID, ebook.Date).First(&_ebook).Error
 	if err != nil {
 		dirty = true
 		err = db().Save(ebook).Error

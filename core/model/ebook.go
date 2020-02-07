@@ -10,7 +10,7 @@ import (
 // Ebook ebook entity
 type Ebook struct {
 	BaseModel
-	Pupil     *Pupil
+	Pupil     *Pupil   `json:"pupil"`
 	PupilID   uint     `gorm:"unique_index:idx_pupil_date" json:"pupil_id"`
 	Date      string   `gorm:"unique_index:idx_pupil_date" json:"date"`
 	Hash      string   `gorm:"unique_index" json:"-"`
