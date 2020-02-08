@@ -12,6 +12,15 @@ import (
 	"github.com/labstack/echo"
 )
 
+// GetUsers GET /users
+func GetUsers(c echo.Context) error {
+	users, err := userRepo.FindAll()
+	if err != nil {
+		return util.ResponseError(c, "500-109", "failed to get user", err)
+	}
+	return c.JSON(http.StatusOK, users)
+}
+
 // UploadAvatar POST /user/upload
 func UploadAvatar(c echo.Context) error {
 	userInfo, _ := c.Get("userInfo").(model.User)
@@ -77,7 +86,9 @@ func UpdateUser(c echo.Context) error {
 	}
 
 	user.ID = existingUser.ID
-	user.Role = existingUser.Role
+	if user.Role == model.RoleUndefined {
+		user.Role = existingUser.Role
+	}
 
 	if user.Name == "" {
 		user.Name = existingUser.Name

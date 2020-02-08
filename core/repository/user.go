@@ -31,3 +31,10 @@ func (r *User) FindByEmail(email string) (*model.User, error) {
 	err := db().Where("email = ?", email).First(user).Error
 	return user, err
 }
+
+// FindAll find all users
+func (r *User) FindAll() ([]*model.User, error) {
+	users := []*model.User{}
+	err := db().Find(&users).Error
+	return users, err
+}

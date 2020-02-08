@@ -90,6 +90,7 @@ func (a *App) initRouter() {
 	api.GET("/notifications", handler.GetNotifications)
 	api.POST("/notifications", handler.SetNotificationsRead)
 
+	api.GET("/users", handler.GetUsers)
 	api.POST("/user/upload", handler.UploadAvatar)
 	api.PUT("/user/update", handler.UpdateUser)
 
