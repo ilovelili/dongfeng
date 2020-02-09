@@ -44,7 +44,7 @@ func (a *Authenticator) TokenValidator(accessToken string, c echo.Context) (bool
 
 	userInfo, err := a.client.parseUserInfo(userID)
 	if err != nil {
-		return false, util.ResponseError(c, "401-101", "unauthorized", err)
+		return false, util.ResponseError(c, "401-101", fmt.Sprintf("unauthorized: %s", err.Error()), err)
 	}
 
 	// user name can't be empty

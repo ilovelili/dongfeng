@@ -14,7 +14,7 @@ case "$response" in
         scp dongfeng dongfeng-2:/root/dongfeng/bin/
         scp const.json dongfeng-2:/root/dongfeng/bin/
 
-        echo "cleaning server"
+        echo "cleaning"
         rm dongfeng 
         ;;
     *)
