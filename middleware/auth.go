@@ -38,7 +38,7 @@ func (a *Authenticator) Skipper(c echo.Context) bool {
 // TokenValidator jwt token validator
 func (a *Authenticator) TokenValidator(accessToken string, c echo.Context) (bool, error) {
 	userID, err := a.client.parseAccessToken(accessToken)
-	if err != nil {
+	if err != nil || userID == "" {
 		return false, util.ResponseError(c, "401-100", "unauthorized", err)
 	}
 
