@@ -10,6 +10,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/ilovelili/dongfeng/core/model"
 	"github.com/ilovelili/dongfeng/util"
+	"github.com/ilovelili/logger"
 	"github.com/kelvinji2009/graphql"
 )
 
@@ -49,6 +50,9 @@ func newAuthingClient() *authingClient {
 	clientID, appSecret := config.Auth.ClientID, config.Auth.ClientSecret
 	once.Do(func() {
 		client := authing.NewClient(clientID, appSecret, false)
+		client.Client.Log = func(s string) {
+			logger.Type("authing").Infoln(s)
+		}
 		instance = &authingClient{
 			client:   client,
 			clientID: clientID,
