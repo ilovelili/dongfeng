@@ -24,7 +24,7 @@ func (r *Profile) FindTemplates() ([]*model.ProfileTemplate, error) {
 // FindTemplateByName find template by name
 func (r *Profile) FindTemplateByName(name string) (*model.ProfileTemplate, error) {
 	template := new(model.ProfileTemplate)
-	err := db().First(&template).Error
+	err := db().Where("name = ?", template.Name).First(&template).Error
 	return template, err
 }
 
