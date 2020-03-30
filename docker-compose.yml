@@ -1,0 +1,26 @@
+version: "3"
+
+services:   
+  db:
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    volumes:      
+      - dongfeng_database:/var/lib/mysql
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=dongfeng
+      - MYSQL_USER=dongfeng
+      - MYSQL_PASSWORD=Aa!7059970599
+    healthcheck:
+      test: ["CMD-SHELL", "mysqlshow -u root -proot"]
+      interval: "5s"
+      retries: 10
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "30m"
+        max-file: "50"
+volumes:
+  dongfeng_database:

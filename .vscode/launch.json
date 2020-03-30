@@ -10,7 +10,9 @@
       "request": "launch",
       "mode": "auto",
       "program": "${fileDirname}",
-      "env": {},
+      "env": {
+        "DF_ENVIROMENT": "local"
+      },
       "args": []
     }
   ]
