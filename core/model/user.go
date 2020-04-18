@@ -6,7 +6,7 @@ type User struct {
 	Email string   `gorm:"unique_index" json:"email"`
 	Name  string   `json:"name"`
 	Photo string   `gorm:"size:1024" json:"photo"`
-	Role  RoleEnum `gorm:"default:3" json:"role"`
+	Role  RoleEnum `gorm:"default:5" json:"role"`
 }
 
 // RoleEnum roles enum
@@ -19,10 +19,12 @@ const (
 	RoleAgentSmith RoleEnum = 1
 	// RoleAdmin admin role
 	RoleAdmin RoleEnum = 2
-	// RoleNormal normal role
-	RoleNormal RoleEnum = 3
+	// RoleTeacher teacher role
+	RoleTeacher RoleEnum = 3
 	// RoleHealth role health
 	RoleHealth RoleEnum = 4
+	// RoleNormal normal role
+	RoleNormal RoleEnum = 5
 	// RoleOthers others role
-	RoleOthers RoleEnum = 5
+	RoleOthers RoleEnum = 6
 )
