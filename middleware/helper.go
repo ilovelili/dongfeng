@@ -42,24 +42,22 @@ type Data struct {
 	UnionID  string `json:"unionid"`
 	ID       string `json:"id"`
 	ClientID string `json:"clientId"`
+	Email    string `json:"email"`
 }
 
 // newAuthingClient new authing client
 func newAuthingClient() *authingClient {
 	config := util.LoadConfig()
 	clientID, appSecret := config.Auth.ClientID, config.Auth.ClientSecret
-	once.Do(func() {
-		client := authing.NewClient(clientID, appSecret, false)
-		client.Client.Log = func(s string) {
-			logger.Type("authing").Infoln(s)
-		}
-		instance = &authingClient{
-			client:   client,
-			clientID: clientID,
-		}
-	})
+	client := authing.NewClient(clientID, appSecret, false)
+	client.Client.Log = func(s string) {
+		logger.Type("authing").Infoln(s)
+	}
 
-	return instance
+	return &authingClient{
+		client:   client,
+		clientID: clientID,
+	}
 }
 
 // parseAccessToken parse access token
@@ -82,8 +80,8 @@ func (c *authingClient) parseAccessToken(accessToken string) (userID string, err
 }
 
 // parseUserInfo parse user info based on user id
-func (c *authingClient) parseUserInfo(userID string) (model.User, error) {
-	user := model.User{}
+func (c *authingClient) parseUserInfo(userID string) (*model.User, error) {
+	user := new(model.User)
 	p := authing.UserQueryParameter{
 		ID:               graphql.String(userID),
 		RegisterInClient: graphql.String(c.clientID),

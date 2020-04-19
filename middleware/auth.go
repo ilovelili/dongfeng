@@ -10,13 +10,13 @@ import (
 
 // Authenticator auth0 authenticator
 type Authenticator struct {
-	client *authingClient
+	client func() *authingClient
 }
 
 // NewAuthenticator authenticator constructor
 func NewAuthenticator() *Authenticator {
 	return &Authenticator{
-		client: newAuthingClient(),
+		client: newAuthingClient,
 	}
 }
 
@@ -37,12 +37,13 @@ func (a *Authenticator) Skipper(c echo.Context) bool {
 
 // TokenValidator jwt token validator
 func (a *Authenticator) TokenValidator(accessToken string, c echo.Context) (bool, error) {
-	userID, err := a.client.parseAccessToken(accessToken)
+	client := a.client()
+	userID, err := client.parseAccessToken(accessToken)
 	if err != nil || userID == "" {
 		return false, util.ResponseError(c, "401-100", "unauthorized", err)
 	}
 
-	userInfo, err := a.client.parseUserInfo(userID)
+	userInfo, err := client.parseUserInfo(userID)
 	if err != nil {
 		return false, util.ResponseError(c, "401-101", fmt.Sprintf("unauthorized: %s", err.Error()), err)
 	}
