@@ -57,7 +57,6 @@ func (a *Authenticator) TokenValidator(accessToken string, c echo.Context) (bool
 	if userInfo.Email == "" {
 		userInfo.Email = fmt.Sprintf("%s@dfyey.top", userID)
 	}
-
-	c.Set("userInfo", userInfo)
+	c.Set("userInfo", *userInfo)
 	return true, nil
 }
