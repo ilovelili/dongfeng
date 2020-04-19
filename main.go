@@ -126,7 +126,7 @@ func (a *App) initRouter() {
 	api.GET("/profile/prev", handler.GetPreviousProfile)
 	api.GET("/profile/next", handler.GetNextProfile)
 	api.POST("/profile", handler.SaveProfile)
-	api.DELETE("profile", handler.DeleteProfile)
+	api.DELETE("/profile", handler.DeleteProfile)
 	api.GET("/profileContent", handler.GetProfileContent)
 	api.POST("/profileContent", handler.SaveProfileContent)
 
