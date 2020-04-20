@@ -104,7 +104,7 @@ func (r *Profile) SaveProfile(profile *model.Profile) error {
 		}
 		return db().Save(profile).Error
 	}
-	return db().Model(&model.Profile{}).Update("profile", profile.Profile).Error
+	return db().Model(&model.Profile{}).Where("id = ?", profile.ID).Update("profile", profile.Profile).Error
 }
 
 // DeleteProfile delete profile

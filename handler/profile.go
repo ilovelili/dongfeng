@@ -199,7 +199,7 @@ func SaveProfileContent(c echo.Context) error {
 	id := c.QueryParam("id")
 	_id, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		return util.ResponseError(c, "400-108", "invalid class", err)
+		return util.ResponseError(c, "400-108", "invalid id", err)
 	}
 
 	profile := new(model.Profile)
