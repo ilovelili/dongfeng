@@ -25,9 +25,9 @@ func db() *gorm.DB {
 		db, err := gorm.Open("mysql", connectionString)
 		if err == nil {
 			if config.DataBase.Debug {
-				instance = db.Debug()
+				instance = db.Debug().LogMode(true)
 			} else {
-				instance = db
+				instance = db.LogMode(false)
 			}
 		}
 	})

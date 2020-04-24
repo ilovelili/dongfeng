@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -213,6 +214,7 @@ func SaveProfileContent(c echo.Context) error {
 	profile.CreatedBy = userInfo.Email
 
 	if err := profileRepo.SaveProfile(profile); err != nil {
+		fmt.Println(err.Error())
 		return util.ResponseError(c, "500-129", "failed to save profiles", err)
 	}
 

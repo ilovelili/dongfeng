@@ -51,25 +51,28 @@ func (a *App) initServer() {
 		AllowOrigins: aos,
 	}))
 
-	e.Use(middleware.BodyDumpWithConfig(middleware.BodyDumpConfig{
-		Handler: func(c echo.Context, reqBody, resBody []byte) {
-			req := c.Request()
-			res := c.Response()
-			if req.URL.Path != "/api/healthz" || res.Status != 200 {
-				logger.Type("access").WithFields(logger.Fields{
-					"remote_ip":       c.RealIP(),
-					"host":            req.Host,
-					"uri":             req.RequestURI,
-					"method":          req.Method,
-					"path":            req.URL.Path,
-					"user_agent":      req.UserAgent(),
-					"request-body":    string(reqBody),
-					"response-status": res.Status,
-					"response-body":   string(resBody),
-				}).Infoln("")
-			}
-		},
-	}))
+	// e.Use(middleware.BodyDumpWithConfig(middleware.BodyDumpConfig{
+	// 	Handler: func(c echo.Context, reqBody, resBody []byte) {
+	// 		req := c.Request()
+	// 		res := c.Response()
+	// 		if (req.URL.Path != "/api/healthz" &&
+	// 			req.URL.Path != "/api/profileContent" &&
+	// 			req.URL.Path != "/api/profileTemplate") ||
+	// 			res.Status != 200 {
+	// 			logger.Type("access").WithFields(logger.Fields{
+	// 				"remote_ip":       c.RealIP(),
+	// 				"host":            req.Host,
+	// 				"uri":             req.RequestURI,
+	// 				"method":          req.Method,
+	// 				"path":            req.URL.Path,
+	// 				"user_agent":      req.UserAgent(),
+	// 				"request-body":    string(reqBody),
+	// 				"response-status": res.Status,
+	// 				"response-body":   string(resBody),
+	// 			}).Infoln("")
+	// 		}
+	// 	},
+	// }))
 
 	a.Server = e
 }
