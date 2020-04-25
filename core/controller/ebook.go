@@ -64,22 +64,23 @@ func (c *Ebook) SaveEbook(ebook *model.Ebook) error {
 			return err
 		}
 
-		// convert to pdf
-		if err = c.convert(ebook); err != nil {
-			return err
-		}
+		// delegate convert & merge to dongfeng jobs batch
+		// // convert to pdf
+		// if err = c.convert(ebook); err != nil {
+		// 	return err
+		// }
 
-		// merge to ebook
-		if err = c.merge(ebook); err != nil {
-			return err
-		}
+		// // merge to ebook
+		// if err = c.merge(ebook); err != nil {
+		// 	return err
+		// }
 
 		// set converted to true if everything goes smoothly
-		ebook.Converted = true
-		_, err = c.ebookRepo.Save(ebook, true)
-		if err != nil {
-			return err
-		}
+		// ebook.Converted = true
+		// _, err = c.ebookRepo.Save(ebook, true)
+		// if err != nil {
+		// 	return err
+		// }
 	}
 
 	return nil
