@@ -5,6 +5,7 @@ type ProfileTemplate struct {
 	BaseModel
 	Name      string  `json:"name"`
 	Profile   *string `sql:"size:999999" json:"profile"`
+	Tags      *string `json:"tags"`
 	CreatedBy string  `json:"created_by"`
 }
 

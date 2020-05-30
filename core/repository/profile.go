@@ -38,6 +38,11 @@ func (r *Profile) SaveTemplate(template *model.ProfileTemplate) error {
 	return db().Save(template).Error
 }
 
+// UpdateTemplateTags update template tags
+func (r *Profile) UpdateTemplateTags(template *model.ProfileTemplate) error {
+	return db().Model(&model.ProfileTemplate{}).Where("name = ?", template.Name).Update("tags", template.Tags).Error
+}
+
 // DeleteTemplate delete template
 func (r *Profile) DeleteTemplate(name string) error {
 	template := new(model.ProfileTemplate)

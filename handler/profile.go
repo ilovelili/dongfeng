@@ -61,6 +61,27 @@ func SaveProfileTemplate(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
+// SaveProfileTemplateTags POST /profileTemplate/tags
+func SaveProfileTemplateTags(c echo.Context) error {
+	userInfo, _ := c.Get("userInfo").(model.User)
+	name := c.QueryParam("name")
+	tags := c.QueryParam("tags")
+
+	template, err := profileRepo.FindTemplateByName(name)
+	if err != nil {
+		template = &model.ProfileTemplate{Name: name, Tags: &tags}
+	} else {
+		template.Tags = &tags
+	}
+
+	template.CreatedBy = userInfo.Email
+	if err := profileRepo.UpdateTemplateTags(template); err != nil {
+		return util.ResponseError(c, "500-126", "failed to save profile templates", err)
+	}
+
+	return c.NoContent(http.StatusOK)
+}
+
 // DeleteProfileTemplate DELETE /profileTemplate
 func DeleteProfileTemplate(c echo.Context) error {
 	userInfo, _ := c.Get("userInfo").(model.User)

@@ -121,6 +121,7 @@ func (a *App) initRouter() {
 	api.POST("/ingredients", handler.SaveIngredients)
 
 	api.GET("/profileTemplateContent", handler.GetProfileTemplateContent)
+	api.POST("/profileTemplateTags", handler.SaveProfileTemplateTags)
 	api.POST("/profileTemplate", handler.SaveProfileTemplate)
 	api.DELETE("/profileTemplate", handler.DeleteProfileTemplate)
 	api.GET("/profileTemplates", handler.GetProfileTemplates)
