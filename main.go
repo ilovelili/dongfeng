@@ -121,6 +121,7 @@ func (a *App) initRouter() {
 	api.POST("/ingredients", handler.SaveIngredients)
 
 	api.GET("/profileTemplateContent", handler.GetProfileTemplateContent)
+	api.GET("/profileTemplateTags", handler.GetProfileTemplateTags)
 	api.POST("/profileTemplateTags", handler.SaveProfileTemplateTags)
 	api.POST("/profileTemplate", handler.SaveProfileTemplate)
 	api.DELETE("/profileTemplate", handler.DeleteProfileTemplate)
@@ -133,6 +134,7 @@ func (a *App) initRouter() {
 	api.DELETE("/profile", handler.DeleteProfile)
 	api.GET("/profileContent", handler.GetProfileContent)
 	api.POST("/profileContent", handler.SaveProfileContent)
+	api.POST("/convertProfileToTemplate", handler.ConvertProfileToTemplate)
 
 	api.GET("/ebooks", handler.GetEbooks)
 	api.POST("/ebook", handler.UpdateEbook)

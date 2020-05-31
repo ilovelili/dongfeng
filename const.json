@@ -55,7 +55,8 @@
         "500-128": "failed to get profiles",
         "500-129": "failed to save profiles",
         "500-130": "failed to delete profiles",
-        "500-131": "failed to generate ebook"
+        "500-131": "failed to generate ebook",
+        "500-132": "profile template already exists"
     },
     "notifications": {
         "N5001": "{{time}} {{title}}{{details}}",
@@ -98,7 +99,7 @@
             "1": "小班",
             "2": "中班/大班"
         }
-    },    
+    },
     "masters": {
         "age_height_weight_p": "1",
         "age_height_weight_sd": "2",

@@ -104,6 +104,16 @@ func GetProfileTemplates(c echo.Context) error {
 	return c.JSON(http.StatusOK, templates)
 }
 
+// GetProfileTemplateTags GET /profileTemplateTags
+func GetProfileTemplateTags(c echo.Context) error {
+	name := c.QueryParam("name")
+	template, err := profileRepo.FindTemplateByName(name)
+	if err != nil {
+		return util.ResponseError(c, "500-125", "failed to get profile templates", err)
+	}
+	return c.JSON(http.StatusOK, template.Tags)
+}
+
 // GetProfiles GET /profiles
 func GetProfiles(c echo.Context) error {
 	year := c.QueryParam("year")
@@ -237,6 +247,37 @@ func SaveProfileContent(c echo.Context) error {
 	if err := profileRepo.SaveProfile(profile); err != nil {
 		fmt.Println(err.Error())
 		return util.ResponseError(c, "500-129", "failed to save profiles", err)
+	}
+
+	return c.NoContent(http.StatusOK)
+}
+
+// ConvertProfileToTemplate POST /convertProfileToTemplate
+func ConvertProfileToTemplate(c echo.Context) error {
+	userInfo, _ := c.Get("userInfo").(model.User)
+	id := c.QueryParam("id")
+	templateName := c.QueryParam("templateName")
+	tags := c.QueryParam("tags")
+
+	_, err := profileRepo.FindTemplateByName(templateName)
+	// tamplate found ... template name already exsits
+	if err == nil {
+		return util.ResponseError(c, "500-132", "profile template already exists", err)
+	}
+
+	profile, err := profileRepo.FindProfile(id)
+	// profile not found
+	if err != nil {
+		return util.ResponseError(c, "500-128", "failed to get profiles", err)
+	}
+
+	if err := profileRepo.SaveTemplate(&model.ProfileTemplate{
+		Name:      templateName,
+		CreatedBy: userInfo.Email,
+		Profile:   profile.Profile,
+		Tags:      &tags,
+	}); err != nil {
+		return util.ResponseError(c, "500-126", "failed to save profile templates", err)
 	}
 
 	return c.NoContent(http.StatusOK)
