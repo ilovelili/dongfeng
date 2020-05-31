@@ -17,7 +17,8 @@ func NewProfileRepository() *Profile {
 // FindTemplates find all templates
 func (r *Profile) FindTemplates() ([]*model.ProfileTemplate, error) {
 	templates := []*model.ProfileTemplate{}
-	err := db().Find(&templates).Error
+	// do not select profile for performance
+	err := db().Select("id, created_at, updated_at, deleted_at, name, created_by, tags").Find(&templates).Error
 	return templates, err
 }
 
@@ -58,6 +59,7 @@ func (r *Profile) FindProfiles(year string) ([]*model.Profile, error) {
 	profiles := []*model.Profile{}
 	err := db().
 		Joins("JOIN pupils ON profiles.pupil_id = pupils.id").Joins("JOIN classes ON pupils.class_id = classes.id").Where("classes.year = ?", year).
+		Select("profiles.id, profiles.created_at, profiles.updated_at, profiles.deleted_at, profiles.pupil_id, profiles.template_id, profiles.date, profiles.created_by").
 		Preload("Template").Preload("Pupil").Preload("Pupil.Class").
 		Find(&profiles).Error
 	return profiles, err
