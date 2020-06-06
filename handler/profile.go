@@ -193,7 +193,13 @@ func SaveProfile(c echo.Context) error {
 	}
 
 	notify(model.GrowthProfileUpdated(userInfo.Email))
-	return c.NoContent(http.StatusOK)
+
+	profile, err = profileRepo.FindProfile(strconv.Itoa(int(profile.ID)))
+	if err != nil {
+		return util.ResponseError(c, "500-128", "failed to get profiles", err)
+	}
+
+	return c.JSON(http.StatusOK, profile)
 }
 
 // DeleteProfile DELETE /profile
