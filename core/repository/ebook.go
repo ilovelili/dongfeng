@@ -33,10 +33,10 @@ func (r *Ebook) FindByID(id uint) (*model.Ebook, error) {
 }
 
 // FindByPupilID find by pupil id
-func (r *Ebook) FindByPupilID(pupilID uint) (*model.Ebook, error) {
-	ebook := new(model.Ebook)
-	err := db().Where("converted = 1 AND pupil_id = ?", pupilID).Preload("Pupil").Preload("Pupil.Class").Find(&ebook).Error
-	return ebook, err
+func (r *Ebook) FindByPupilID(pupilID uint) ([]*model.Ebook, error) {
+	ebooks := []*model.Ebook{}
+	err := db().Where("converted = 1 AND pupil_id = ?", pupilID).Preload("Pupil").Preload("Pupil.Class").Find(&ebooks).Error
+	return ebooks, err
 }
 
 // FindByClassID find by class id
