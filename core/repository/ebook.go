@@ -55,9 +55,9 @@ func (r *Ebook) Save(ebook *model.Ebook, forceUpdate bool) (dirty bool, err erro
 		err = db().Save(ebook).Error
 	} else if _ebook.Hash == ebook.Hash {
 		dirty = false
+		ebook.ID = _ebook.ID
 		// force update
 		if forceUpdate {
-			ebook.ID = _ebook.ID
 			err = db().Save(ebook).Error
 		}
 	} else {
