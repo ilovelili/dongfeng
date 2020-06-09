@@ -56,7 +56,8 @@
         "500-129": "failed to save profiles",
         "500-130": "failed to delete profiles",
         "500-131": "failed to generate ebook",
-        "500-132": "profile template already exists"
+        "500-132": "profile template already exists",
+        "500-133": "failed to delete ebook"
     },
     "notifications": {
         "N5001": "{{time}} {{title}}{{details}}",

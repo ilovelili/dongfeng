@@ -86,6 +86,12 @@ func (c *Ebook) SaveEbook(ebook *model.Ebook) error {
 	return nil
 }
 
+// RemoveFromStorage remove from storage
+func (c *Ebook) RemoveFromStorage(ebook *model.Ebook) error {
+	htmllocaldir := path.Join(config.Ebook.OriginDir, ebook.Pupil.Class.Year, ebook.Pupil.Class.Name, ebook.Pupil.Name, ebook.Date)
+	return os.RemoveAll(htmllocaldir)
+}
+
 // uploadToCloudStorage upload css folder and index.html to local (or aliyun oss later)
 func (c *Ebook) uploadToStorage(ebook *model.Ebook) error {
 	htmllocaldir := path.Join(config.Ebook.OriginDir, ebook.Pupil.Class.Year, ebook.Pupil.Class.Name, ebook.Pupil.Name, ebook.Date)

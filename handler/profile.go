@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/ilovelili/dongfeng/core/controller"
 	"github.com/ilovelili/dongfeng/core/model"
 	"github.com/ilovelili/dongfeng/util"
 	"github.com/labstack/echo"
@@ -206,9 +207,26 @@ func SaveProfile(c echo.Context) error {
 func DeleteProfile(c echo.Context) error {
 	userInfo, _ := c.Get("userInfo").(model.User)
 	id := c.QueryParam("id")
-	err := profileRepo.DeleteProfile(id)
+
+	profile, err := profileRepo.FindProfile(id)
+	if err != nil {
+		return util.ResponseError(c, "500-128", "failed to get profiles", err)
+	}
+
+	err = profileRepo.DeleteProfile(id)
 	if err != nil {
 		return util.ResponseError(c, "500-130", "failed to delete profiles", err)
+	}
+
+	// try to delete original ebook file if exists
+	ebook := &model.Ebook{
+		Pupil: profile.Pupil,
+		Date:  profile.Date,
+	}
+
+	ebookCtrl := controller.NewEbookController()
+	if err := ebookCtrl.RemoveFromStorage(ebook); err != nil {
+		return util.ResponseError(c, "500-133", "failed to delete ebook", err)
 	}
 
 	notify(model.GrowthProfileUpdated(userInfo.Email))
