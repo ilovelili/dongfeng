@@ -93,7 +93,7 @@ func (r *Profile) FindNextProfile(pupilID, date string) (*model.Profile, error) 
 	profile := new(model.Profile)
 	err := db().Where("pupil_id = ? AND date > ?", pupilID, date).
 		Preload("Template").Preload("Pupil").Preload("Pupil.Class").
-		Order("date desc").
+		Order("date asc").
 		First(&profile).Error
 
 	if err == gorm.ErrRecordNotFound {
