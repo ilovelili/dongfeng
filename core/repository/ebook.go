@@ -7,7 +7,7 @@ type Ebook struct{}
 
 // NewEbookRepository new ebook repository
 func NewEbookRepository() *Ebook {
-	db().AutoMigrate(&model.Ebook{})
+	db().AutoMigrate(&model.Ebook{}, &model.TemplatePreview{})
 	return new(Ebook)
 }
 
@@ -64,6 +64,29 @@ func (r *Ebook) Save(ebook *model.Ebook, forceUpdate bool) (dirty bool, err erro
 		dirty = true
 		ebook.ID = _ebook.ID
 		err = db().Save(ebook).Error
+	}
+
+	return
+}
+
+// SaveTemplatePreview save template preview
+func (r *Ebook) SaveTemplatePreview(templatePreview *model.TemplatePreview, forceUpdate bool) (dirty bool, err error) {
+	_templatePreview := new(model.TemplatePreview)
+	err = db().Where("name = ?", templatePreview.Name).First(&_templatePreview).Error
+	if err != nil {
+		dirty = true
+		err = db().Save(templatePreview).Error
+	} else if _templatePreview.Hash == templatePreview.Hash {
+		dirty = false
+		templatePreview.ID = _templatePreview.ID
+		// force update
+		if forceUpdate {
+			err = db().Save(templatePreview).Error
+		}
+	} else {
+		dirty = true
+		templatePreview.ID = _templatePreview.ID
+		err = db().Save(templatePreview).Error
 	}
 
 	return

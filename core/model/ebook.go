@@ -20,6 +20,17 @@ type Ebook struct {
 	CSS       string   `gorm:"-" json:"css"`
 }
 
+// TemplatePreview templatepreview entity
+type TemplatePreview struct {
+	BaseModel
+	Name      string   `gorm:"unique_index"`
+	Hash      string   `gorm:"unique_index" json:"-"`
+	Converted bool     `json:"-"`
+	Images    []string `gorm:"-" json:"images"`
+	HTML      string   `gorm:"-" json:"html"`
+	CSS       string   `gorm:"-" json:"css"`
+}
+
 // ResolveHash resolve content md5 hash
 func (e *Ebook) ResolveHash() {
 	var sb strings.Builder
@@ -45,4 +56,28 @@ func (e *Ebook) ResolveCloudCSS() string {
 // ResolveCloudHTML replace style link with oss css
 func (e *Ebook) ResolveCloudHTML() string {
 	return strings.Replace(e.HTML, "./img/", "../../../../../img/", -1)
+}
+
+// ResolveHash resolve content md5 hash
+func (t *TemplatePreview) ResolveHash() {
+	var sb strings.Builder
+	for _, img := range t.Images {
+		sb.WriteString(img)
+	}
+	sb.WriteString(t.HTML)
+	sb.WriteString(t.CSS)
+
+	str := sb.String()
+	hash := md5.Sum([]byte(str))
+	t.Hash = hex.EncodeToString(hash[:])
+}
+
+// ResolveCloudCSS replace image link
+func (t *TemplatePreview) ResolveCloudCSS() string {
+	return strings.Replace(t.CSS, "../img/", "../../../img/", -1)
+}
+
+// ResolveCloudHTML replace style link with oss css
+func (t *TemplatePreview) ResolveCloudHTML() string {
+	return strings.Replace(t.HTML, "./img/", "../../../img/", -1)
 }

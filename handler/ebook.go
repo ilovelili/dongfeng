@@ -65,3 +65,18 @@ func UpdateEbook(c echo.Context) error {
 
 	return c.NoContent(http.StatusOK)
 }
+
+// UpdateProfileTemplatePreview POST /convertProfileToTemplate
+func UpdateProfileTemplatePreview(c echo.Context) error {
+	templatePreview := new(model.TemplatePreview)
+	if err := c.Bind(templatePreview); err != nil {
+		return util.ResponseError(c, "400-120", "failed to bind template preview", err)
+	}
+
+	ebookCtrl := controller.NewEbookController()
+	if err := ebookCtrl.SaveTemplatePreview(templatePreview); err != nil {
+		return util.ResponseError(c, "500-131", "failed to generate ebook", err)
+	}
+
+	return c.NoContent(http.StatusOK)
+}

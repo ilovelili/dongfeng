@@ -20,6 +20,7 @@
         "400-117": "invalid profile",
         "400-118": "failed to bind profile",
         "400-119": "failed to bind ebook",
+        "400-120": "failed to bind template preview",
         "401-000": "invalid access token",
         "401-001": "invalid userId",
         "401-002": "failed to parse user",
@@ -57,7 +58,8 @@
         "500-130": "failed to delete profiles",
         "500-131": "failed to generate ebook",
         "500-132": "profile template already exists",
-        "500-133": "failed to delete ebook"
+        "500-133": "failed to delete ebook",
+        "500-134": "failed to save template preview"
     },
     "notifications": {
         "N5001": "{{time}} {{title}}{{details}}",
