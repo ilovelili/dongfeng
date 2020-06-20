@@ -74,6 +74,17 @@ func (r *Profile) FindProfile(id string) (*model.Profile, error) {
 	return profile, err
 }
 
+// GetProfileByClassIDAndDate get profiles by classID and date
+func (r *Profile) GetProfileByClassIDAndDate(classID string, date string) ([]*model.ProfileCount, error) {
+	profiles := []*model.ProfileCount{}
+	err := db().
+		Table("profiles").
+		Joins("JOIN pupils ON profiles.pupil_id = pupils.id").Joins("JOIN classes ON pupils.class_id = classes.id").Where("pupils.class_id = ? AND profiles.date = ?", classID, date).
+		Select("pupils.id AS pupilId, pupils.name AS pupil, classes.name AS class").
+		Scan(&profiles).Error
+	return profiles, err
+}
+
 // FindPrevProfile find previous profile
 func (r *Profile) FindPrevProfile(pupilID, date string) (*model.Profile, error) {
 	profile := new(model.Profile)
@@ -117,4 +128,45 @@ func (r *Profile) SaveProfile(profile *model.Profile) error {
 // DeleteProfile delete profile
 func (r *Profile) DeleteProfile(id string) error {
 	return db().Unscoped().Where("id = ?", id).Delete(&model.Profile{}).Error
+}
+
+// ApplyProfileTemplate apply profile template
+func (r *Profile) ApplyProfileTemplate(date string, pupilIDs []uint, templateID uint, creator string) error {
+	tx := db().Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	for _, pupilID := range pupilIDs {
+		profile := &model.Profile{
+			Date:       date,
+			PupilID:    &pupilID,
+			Profile:    nil,
+			CreatedBy:  creator,
+			TemplateID: templateID,
+		}
+
+		var id []uint
+		// https://gorm.io/docs/query.html pluck (must map a slice?)
+		if tx.Table("profiles").Where("date = ? AND pupil_id = ? AND deleted_at IS NULL", date, pupilID).Pluck("id", &id); len(id) == 0 {
+			// if tx.Raw("SELECT id FROM profiles WHERE date = ? AND pupil_id = ? AND deleted_at IS NULL LIMIT 1", date, pupilID).Scan(&id).RecordNotFound() {
+			// if not found, insert. else update
+			profile.ID = 0
+		} else {
+			profile.ID = id[0]
+		}
+
+		if err := tx.Save(profile).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit().Error
 }

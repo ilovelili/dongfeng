@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -249,6 +248,17 @@ func GetProfileContent(c echo.Context) error {
 	return c.JSONBlob(http.StatusOK, []byte(*profile.Profile))
 }
 
+// GetProfileCount GET /profileCount
+func GetProfileCount(c echo.Context) error {
+	classID := c.QueryParam("classId")
+	date := c.QueryParam("date")
+	count, err := profileRepo.GetProfileByClassIDAndDate(classID, date)
+	if err != nil {
+		return util.ResponseError(c, "500-128", "failed to get profiles", err)
+	}
+	return c.JSON(http.StatusOK, count)
+}
+
 // SaveProfileContent POST /profileContent
 func SaveProfileContent(c echo.Context) error {
 	userInfo, _ := c.Get("userInfo").(model.User)
@@ -269,7 +279,6 @@ func SaveProfileContent(c echo.Context) error {
 	profile.CreatedBy = userInfo.Email
 
 	if err := profileRepo.SaveProfile(profile); err != nil {
-		fmt.Println(err.Error())
 		return util.ResponseError(c, "500-129", "failed to save profiles", err)
 	}
 
@@ -302,6 +311,51 @@ func ConvertProfileToTemplate(c echo.Context) error {
 		Tags:      &tags,
 	}); err != nil {
 		return util.ResponseError(c, "500-126", "failed to save profile templates", err)
+	}
+
+	return c.NoContent(http.StatusOK)
+}
+
+// ApplyProfileTemplate POST /applyProfileTemplate
+func ApplyProfileTemplate(c echo.Context) error {
+	type ApplyProfileRequest struct {
+		Date       string `json:"date"`
+		ClassID    uint   `json:"classId"`
+		PupilIDs   []uint `json:"pupilIds"`
+		TemplateID uint   `json:"templateId"`
+		Overwrite  bool   `json:"overwrite"`
+	}
+
+	userInfo, _ := c.Get("userInfo").(model.User)
+	applyProfileReq := new(ApplyProfileRequest)
+	if err := c.Bind(applyProfileReq); err != nil {
+		return util.ResponseError(c, "400-121", "failed to bind apply profile template request", err)
+	}
+
+	// first, get pupils in class
+	pupils, err := pupilRepo.FindByClassID(applyProfileReq.ClassID)
+	if err != nil {
+		return util.ResponseError(c, "500-107", "failed to get pupils", err)
+	}
+
+	// then filter out the pupil ids
+	pupilIDs := []uint{}
+	for _, pupil := range pupils {
+		// if overwrite set to false, then exclude the pupilIds
+		if !applyProfileReq.Overwrite {
+			for _, pupilID := range applyProfileReq.PupilIDs {
+				if pupilID == pupil.ID {
+					continue
+				}
+			}
+		}
+		pupilIDs = append(pupilIDs, pupil.ID)
+	}
+
+	// apply
+	err = profileRepo.ApplyProfileTemplate(applyProfileReq.Date, pupilIDs, applyProfileReq.TemplateID, userInfo.Email)
+	if err != nil {
+		return util.ResponseError(c, "500-135", "failed to apply template", err)
 	}
 
 	return c.NoContent(http.StatusOK)

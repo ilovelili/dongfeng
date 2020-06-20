@@ -20,3 +20,10 @@ type Profile struct {
 	Profile    *string          `sql:"size:999999" json:"profile"`
 	CreatedBy  string           `json:"created_by"`
 }
+
+// ProfileCount profile count entity just for json response
+type ProfileCount struct {
+	PupilID uint   `gorm:"column:pupilId" json:"pupilId"`
+	Pupil   string `json:"pupil"`
+	Class   string `json:"class"`
+}

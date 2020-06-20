@@ -16,7 +16,7 @@ require (
 	github.com/gorilla/websocket v1.4.0 // indirect
 	github.com/ilovelili/aliyun-client v0.0.0-20190605074008-4fbaa377d984
 	github.com/ilovelili/logger v0.0.0-20190923035736-5b5242727684
-	github.com/jinzhu/gorm v1.9.12
+	github.com/jinzhu/gorm v1.9.14
 	github.com/jinzhu/now v1.1.1 // indirect
 	github.com/kelvinji2009/ctxhttp v0.0.0-20190723014959-778a004eb7c4 // indirect
 	github.com/kelvinji2009/graphql v0.0.0-20190723015100-e537b5df1797
@@ -31,9 +31,7 @@ require (
 	github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f // indirect
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20200117160349-530e935923ad // indirect
-	golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
-	golang.org/x/sys v0.0.0-20200124204421-9fbb57f87de9 // indirect
 	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4 // indirect
 	google.golang.org/appengine v1.6.1 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
